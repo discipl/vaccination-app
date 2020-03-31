@@ -1,0 +1,72 @@
+<div class="header">
+  <h1>{{ 'General.'+ role +'.Vaccinations' | translate }}</h1>
+  <button mat-raised-button color="primary" (click)="newVaccinationDialog()" *ngIf="authService.isHcpManager()">
+    <mat-icon>add</mat-icon>
+    {{ 'General.Add new' | translate }}
+  </button>
+</div>
+
+<table mat-table [dataSource]="prepareData()">
+  <ng-container matColumnDef="vaccine">
+    <th mat-header-cell *matHeaderCellDef>{{ 'General.Vaccine' | translate }}</th>
+    <td mat-cell *matCellDef="let element" (click)="showDetails(element)">
+      <ng-container *ngIf="element.vaccines">
+        <div *ngFor="let vaccine of element.vaccines">
+          {{ vaccine.batchCode }}
+        </div>
+      </ng-container>
+      <div class="name" *ngIf="element.name">
+        {{ element.name}}
+      </div>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="date">
+    <th mat-header-cell *matHeaderCellDef>{{ 'General.Date' | translate }}</th>
+    <td mat-cell *matCellDef="let element" (click)="showDetails(element)">
+      <ng-container *ngIf="element.allowedDates">
+        <div *ngFor="let date of element.allowedDates">
+          {{ date | date:'dd-MM-yyyy' }}<br/>
+        </div>
+      </ng-container>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="place">
+    <th mat-header-cell *matHeaderCellDef>{{ 'General.Place' | translate }}</th>
+    <td mat-cell *matCellDef="let element" (click)="showDetails(element)">
+      <div *ngIf="element.place">{{ element.place }}</div>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="reservedCount">
+    <th mat-header-cell *matHeaderCellDef>{{ 'General.Reserved' | translate }}</th>
+    <td align="center" mat-cell *matCellDef="let element" (click)="showDetails(element)">
+      <div *ngIf="element.initialCount">{{ element.initialCount - element.availableCount }}</div>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="initialCount">
+    <th mat-header-cell *matHeaderCellDef>{{ 'General.Total' | translate }}</th>
+    <td  align="center" mat-cell *matCellDef="let element" (click)="showDetails(element)">
+      <div *ngIf="element.initialCount">{{ element.initialCount }}</div>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="bloodTest">
+    <th mat-header-cell *matHeaderCellDef class="vaccination-actions">{{ 'General.Blood test' | translate }}</th>
+    <td mat-cell *matCellDef="let element" class="vaccination-actions" (click)="element.bloodTestExists ? showDetails(element) : newBloodTestDialog(element.vaccination)">
+      <ng-container *ngIf="element._id">
+        <mat-icon *ngIf="element.bloodTestExists" color="primary">done</mat-icon>
+        <mat-icon *ngIf="!element.bloodTestExists && authService.isHcpManager()" color="primary">add</mat-icon>
+      </ng-container>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr [class.parent]="row._id"
+      [class.child]="row.parentId"
+      [attr.parentid]="row.parentId"
+      mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+

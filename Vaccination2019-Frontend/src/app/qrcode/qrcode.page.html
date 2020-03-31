@@ -1,0 +1,13 @@
+<ion-content class="general-content">
+  <div class="content-padding qr-container">
+    <div class="qr-title">{{ ('Appointments.shareQrBy' + role) | translate }}</div>
+
+    <div class="qr-code-container">
+      <qr-code value="{{ value }}" size="230"></qr-code>
+    </div>
+
+    <ion-button class="button-style" (click)="close()">
+      {{'Appointments.doneBtn' | translate}}
+    </ion-button>
+  </div>
+</ion-content>

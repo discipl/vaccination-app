@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="toolbar-background text-white other-title-font-size">
+      {{'Appointments.title' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="general-content content-padding-top">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" [pullMin]="60" [pullMax]="60">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ng-container *ngIf="!appointments">
+    <p class="ion-text-center">{{'Appointments.noAppointments' | translate}}</p>
+  </ng-container>
+
+  <ng-container *ngIf="appointments && appointments.length > 0">
+    <ion-card class="item-card" *ngFor="let appointment of appointments" (click)="showDetails(appointment)" [hidden]="isHidden(appointment)">
+      <ion-grid>
+        <ion-row class="item">
+          <ion-col size="10">
+            <div class="status" [ngClass]="appointment.status">
+              {{('Appointments.status.' + appointment.status) | translate}}
+            </div>
+
+            <h3 *ngIf="appointment.eventType">{{'eventType.' + appointment.eventType | translate}}</h3>
+
+            <div class="date-row date-format" *ngIf="!!appointment.chosenDate">
+              <img alt="icon" src="../../../assets/icon/date.svg">
+              {{ appointment.chosenDate | date:'E d MMM y':undefined:getLocale()}}
+            </div>
+
+            <div class="locate-row">
+              <img alt="icon" src="../../../assets/icon/pin.svg">
+              {{appointment.place.address}}
+            </div>
+          </ion-col>
+
+          <ion-col size="2" class="arrow-col">
+            <img alt="icon" src="../../../assets/icon/arrow.svg">
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+    <div class="content-padding" *ngIf="hideFinished && hasFinishedEvents">
+        <ion-button class="button-style" (click)="showHidden()">
+          {{'Appointments.showFinished' | translate}}
+        </ion-button>
+    </div>
+  </ng-container>
+</ion-content>

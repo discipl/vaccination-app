@@ -1,0 +1,211 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: [branch]
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: docker-secret
+  namespace: [branch]
+data:
+  .dockerconfigjson: ew0KCSJhdXRocyI6IHsNCgkJImxsZG9ja2VycmVnLmF6dXJlY3IuaW8iOiB7DQoJCQkiYXV0aCI6ICJURXhrYjJOclpYSnlaV2M2UkRVMFpscEVaRk5UUFRZME9FUm5VazVpTnk5Q2RtSTJaMUpPWmpseFRYVT0iDQoJCX0NCgl9LA0KCSJIdHRwSGVhZGVycyI6IHsNCgkJIlVzZXItQWdlbnQiOiAiRG9ja2VyLUNsaWVudC8xOC4wMS4wLWNlICh3aW5kb3dzKSINCgl9DQp9
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: logsa
+  namespace: [branch]
+data:
+  azurestorageaccountname: dmFjY2luYXRpb25sb2dzYQ==
+  azurestorageaccountkey: MzR2dTk4aHliR2J1cllwYWgxRVNTM0dNUmh2aUsvclZBaWxtREkrTDhQVWFKMW9VNk5paTVJelkxN0R2T2hxd0x6OUQwanlUdm1UZGlZMkxla0xPdVE9PQ==
+type: Opaque
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: service
+  namespace: [branch]
+  labels:
+    project: "vaccination"
+    env: [branch]
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: service
+        env: [branch]
+        project: "vaccination"
+    spec:
+      containers:
+        - name: service
+          image: lldockerreg.azurecr.io/vaccination-backend:[branch-with-number]
+          volumeMounts:
+            - name: log
+              mountPath: /app/logs
+              subPath: log-[branch]
+          ports:
+            - containerPort: 8080
+              name: service-port
+          args: [cmd]
+          livenessProbe:
+            httpGet:
+              path:  /version
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            timeoutSeconds: 5
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name:  docker-secret
+      restartPolicy: Always
+      volumes:
+        - name: log
+          azureFile:
+            secretName: logsa
+            shareName: vaccinationlog
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: services-service
+  namespace: [branch]
+spec:
+  selector:
+    app: service
+  type: ClusterIP
+  ports:
+    - name: service
+      port: 80
+      targetPort: service-port
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  namespace: [branch]
+  annotations:
+    kubernetes.io/ingress.class: "addon-http-application-routing"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+#    cert-manager.io/cluster-issuer: letsencrypt-prod
+  labels:
+    project: "productone"
+spec:
+#  tls:
+#  - hosts:
+#    - [dns]vaccination.api.ledgerleopard.com
+  rules:
+    - host: [dns]vaccination.api.ledgerleopard.com
+      http:
+        paths:
+        - path: /
+          backend:
+            serviceName: services-service
+            servicePort: 80
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo
+  namespace: [branch]
+data:
+  MONGO_INITDB_ROOT_USERNAME: c3VwZXJVc2Vy
+  MONGO_INITDB_ROOT_PASSWORD: dGhpc19pc19ub3RfeW91cl9wYXNzd29yZA==
+type: Opaque
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-[branch]
+  labels:
+    mongo: [branch]
+spec:
+  capacity:
+    storage: 100Gi
+  storageClassName: default
+  azureDisk:
+    kind: Managed
+    diskName: mongo-[branch]
+    diskURI: /subscriptions/c2cb3940-082c-48c3-ba45-06302a879e0f/resourceGroups/vaccination-backend-rg/providers/Microsoft.Compute/disks/mongo-[branch]
+    fsType: ext4
+    cachingMode: ReadOnly
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    kind: PersistentVolumeClaim
+    name: mongo
+    namespace: [branch]
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mongo
+  namespace: [branch]
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: default
+  resources:
+    requests:
+      storage: 100Gi
+  selector:
+    matchLabels:
+      mongo: [branch]
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mongo
+  namespace: [branch]
+  labels:
+    project: "vaccination"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        project: "vaccination"
+        app: mongo
+    spec:
+      containers:
+        - image: mongo:4
+          name:  mongo
+          volumeMounts:
+            - name:  data
+              mountPath:  /data/db
+          imagePullPolicy: IfNotPresent
+          args:
+            - --auth
+          envFrom:
+            - secretRef:
+                name: mongo
+          ports:
+            - name: mongo
+              containerPort: 27017
+          securityContext:
+            privileged: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: [branch]
+spec:
+  ports:
+    - name: mongo
+      port: 27117
+      targetPort: 27017
+  selector:
+    app: mongo

@@ -1,0 +1,66 @@
+<ion-content>
+  <div padding-horizontal text-center class="logo">
+    <img alt="icon" src="assets/icon/logo-ro.svg">
+  </div>
+  <ion-toolbar class="main-title main-title-font-size">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="" class="text-white" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="toolbar-background text-white">
+      {{'General.title' | translate}}
+    </ion-title>
+  </ion-toolbar>
+  <form novalidate autocomplete="off" [formGroup]="myForm">
+    <div class="inputs-wrapper">
+      <div *ngIf="isHealthcareProvider else otherRole">
+        <ion-input class="black-text" name="number" type="text" maxlength="15" [formControlName]="fieldName"
+          placeholder="{{'Login.bigNumber' | translate}}">
+        </ion-input>
+        <p class='validation-error'>
+          <span *ngIf="myForm.controls[fieldName].hasError('required') && myForm.controls[fieldName].dirty">
+            {{'Login.bigIdEmpty' | translate}}
+          </span>
+          <span *ngIf="myForm.controls[fieldName].hasError('pattern') && myForm.controls[fieldName].dirty">
+          {{'Login.numberPattern' | translate}}
+          </span>
+        </p>
+      </div>
+
+      <ng-template #otherRole>
+        <ion-input class="black-text" name="number" type="text" maxlength="15" [formControlName]="fieldName"
+          placeholder="{{'Login.duoNumber' | translate}}">
+        </ion-input>
+        <p class='validation-error'>
+          <span *ngIf="myForm.controls[fieldName].hasError('required') && myForm.controls[fieldName].dirty">
+          {{'Login.duoIdEmpty' | translate}}
+          </span>
+          <span  *ngIf="myForm.controls[fieldName].hasError('pattern') && myForm.controls[fieldName].dirty">
+            {{'Login.numberPattern' | translate}}
+          </span>
+        </p>
+      </ng-template>
+
+      <ion-input class="black-text" name="password" type="password" minlength="6" maxlength="10"
+        formControlName="password" placeholder="{{ 'Login.password' | translate }}">
+      </ion-input>
+      <p class='validation-error'>
+        <span *ngIf="myForm.controls['password'].hasError('required') && myForm.controls['password'].dirty">
+          {{'Login.passwordEmpty' | translate}}
+        </span>
+        <span *ngIf="myForm.controls['password'].hasError('minlength') && myForm.controls['password'].dirty">
+          {{'Login.passwordError' | translate}}
+        </span>
+      </p>
+    </div>
+
+    <div class="content-padding">
+      <ion-button class="button-style" (click)="login()">
+        {{'Login.loginBtn' | translate}}
+      </ion-button>
+      <ion-button class="second-button-style" expand="block" fill="clear" routerLink="register"
+        routerDirection="forward">
+        {{'Login.creteAccount' | translate}}
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

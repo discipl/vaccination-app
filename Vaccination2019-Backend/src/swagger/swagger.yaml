@@ -1,0 +1,1040 @@
+swagger: "2.0"
+info:
+  title: Vaccination REST API
+  description: API for Vaccination
+  version: 1.0.0
+
+basePath: /
+schemes:
+- https
+
+definitions:
+  BadRequest:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      httpStatusCode:
+        type: integer
+      fields:
+        type: array
+        items:
+          type: object
+          properties:
+            path:
+              type: string
+              example: 'body.azureSubscriptions[0].subscriptionId'
+            param:
+              type: string
+              description: Name of invalid field
+            message:
+              type: string
+            type:
+              type: string
+              enum: ['REQUIRED', 'INVALID']
+  Unauthorized:
+    description: User is not authorized or session is expired
+    schema:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        httpStatusCode:
+          type: integer
+      example:
+        code: "TOKEN_INVALID"
+        message: "Your session has been expired"
+        params: null
+        httpStatusCode: 401
+  Forbidden:
+    description: User doesn't has permissions for this operation
+    schema:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        httpStatusCode:
+          type: integer
+      example:
+        code: "PERMISSION_ERROR"
+        message: You don't have permission to access this API
+        params: null
+        httpStatusCode: 403
+  NotFound:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      httpStatusCode:
+        type: integer
+    example:
+      code: "OBJECT_NOT_FOUND"
+      message: "User wasn't found"
+      params: "id"
+      httpStatusCode: 404
+  Conflict:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      httpStatusCode:
+        type: integer
+    example:
+      code: "CONFLICT"
+      message: "descrpition"
+      httpStatusCode: 409
+  Address:
+    type: object
+    properties:
+      address:
+        type: string
+      zipCode:
+        type: string
+      country:
+        type: string
+  School:
+    type: object
+    properties:
+      name:
+        type: string
+      address:
+        type: string
+      zipCode:
+        type: string
+      country:
+        type: string
+  User:
+    type: object
+    properties:
+      _id:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      login:
+        type: string
+      role:
+        type: string
+        enum: ['HEALTHCARE_PROVIDER', 'STUDENT']
+      dateOfBirth:
+        type: string
+      address:
+        $ref: '#/definitions/Address'
+      duoId:
+        type: string
+      bigId:
+        type: string
+      HCPManagerNumber:
+        type: string
+      student:
+        type: object
+        properties:
+          study:
+            type: string
+          crebo:
+            type: boolean
+          school:
+            $ref: '#/definitions/School'
+      hcProvider:
+        type: object
+        properties:
+          diploma:
+            type: string
+          vaccinationDiploma:
+            type: boolean
+          healthcareProvider:
+            type: object
+            properties:
+              name:
+                type: string
+              address:
+                $ref: '#/definitions/Address'
+  Vaccine:
+    type: object
+    required:
+    - batchCode
+    - type
+    - price
+    - bloodTestPrice
+    - initialAmount
+    properties:
+      _id:
+        type: string
+      batchCode:
+        type: string
+      type:
+        type: string
+        description: ID of vaccine type
+      name:
+        type: string
+      price:
+        type: number
+      bloodTestPrice:
+        type: number
+      initialAmount:
+        type: number
+      avaialableAmount:
+        type: number
+      finishedAmount:
+        type: number
+  Event:
+    type: object
+    required:
+    - type
+    - bigId
+    - date
+    properties:
+      _id:
+        type: string
+      type:
+        type: string
+        enum: ['VACCINATION', 'BLOOD_TEST']
+      vaccine:
+        type: string
+      vaccinationEvent:
+        type: string
+      bigIds:
+        type: array
+        items:
+          type: string
+      allowedDates:
+        type: array
+        items:
+          type: date
+      place:
+        type: object
+        required:
+        - name
+        - address
+        properties:
+          name:
+            type: string
+          address:
+            type: string
+          latitude:
+            type: number
+          longitude:
+            type: number
+  AppointmentUser:
+    type: object
+    properties:
+      _id:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+  Appointment:
+    type: object
+    properties:
+      _id:
+        type: string
+      vaccine:
+        type: string
+        description: batchCode
+      chosenDate:
+        type: string
+      place:
+        type: object
+        required:
+        - name
+        - address
+        properties:
+          name:
+            type: string
+          address:
+            type: string
+          latitude:
+            type: number
+          longitude:
+            type: number
+      status:
+        type: string
+        enum: ['REGISTERED', 'CONFIRMED_BY_STUDENT', 'CONFIRMED_BY_HEALTHCARE_PROVIDER', 'CONFIRMED', 'FINISHED_BY_STUDENT', 'FINISHED_BY_HEALTHCARE_PROVIDER', 'FINISHED']
+      availableActions:
+        type: array
+        items:
+          type: string
+          enum: ['SHARE_TOKEN', 'CONFIRM_OPPONENT', 'FINISH']
+      hcProvider:
+        $ref: '#/definitions/AppointmentUser'
+      student:
+        $ref: '#/definitions/AppointmentUser'
+  PaginationInfo:
+    type: object
+    properties:
+      count:
+        type: number
+        description: Total count of items
+      pageSize:
+        type: number
+        description: Number of items on the page
+      pageIndex:
+        type: number
+        description: Current page number
+  Student:
+    type: object
+    properties:
+      duoId:
+        type: number
+      firstName:
+        type: string
+      lastName:
+        type: string
+    example:
+      duoId: '1'
+      firstName: Student First name 1
+      lastName: Student Last name 1
+      dateOfBirth: 01.01.2001
+      address:
+        zipCode: '111111'
+        country: Nederland
+      study: Zorg 1
+      crebo: true
+      school:
+        name: name value
+        address: address value
+        zipCode: '111111'
+        country: Nederland
+  VaccineType:
+    type: object
+    properties:
+      producer:
+        type: string
+      drug:
+        type: string
+      dosage:
+        type: string
+      comment:
+        type: string
+parameters:
+  Token:
+    name: token
+    in: header
+    required: true
+    type: string
+    description: User's token
+  PageSize:
+    in: query
+    name: pageSize
+  PageIndex:
+    in: query
+    name: pageIndex
+
+paths:
+  /version:
+    get:
+      summary: Get git version of application
+      tags:
+      - Version
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Current version of backend
+          schema:
+            type: object
+            properties:
+              version:
+                type: string
+  /version/secure:
+    get:
+      summary: Get git version of application with check session. Use for tests
+      tags:
+      - Version
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      responses:
+        200:
+          description: Current version of backend
+          schema:
+            type: object
+            properties:
+              version:
+                type: string
+  /users:
+    put:
+      summary: Register user
+      tags:
+      - User
+      produces:
+      - applications/json
+      parameters:
+      - in: body
+        name: bigId or duoId and password
+        schema:
+          type: object
+          required:
+          - password
+          properties:
+            bigId:
+              type: string
+            duoId:
+              type: string
+            password:
+              type: string
+      responses:
+        201:
+          description: User was added
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: Incorrect parameters
+          schema:
+            $ref: '#/definitions/BadRequest'
+        404:
+          description: User was not found
+          schema:
+            $ref: '#/definitions/NotFound'
+        409:
+          description: User exists
+          schema:
+            $ref: '#/definitions/Conflict'
+    post:
+      summary: Change user's login
+      tags:
+      - User
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: body
+        schema:
+          type: object
+          required:
+          - login
+          properties:
+            login:
+              type: string
+      responses:
+        200:
+          description: User login was changed
+        400:
+          description: Incorrect parameters
+          schema:
+            $ref: '#/definitions/BadRequest'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        409:
+          description: This login is already used
+          schema:
+            $ref: '#/definitions/Conflict'
+  /users/hcpManagers:
+    get:
+      summary: HCP Managers list with pagination
+      tags:
+      - User
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: query
+        name: pageIndex
+        description: Number of page
+      - in: query
+        name: pageSize
+        description: Number of items on page
+      - in: query
+        name: HCPManagerNumber
+        description: Filter by HCPManagerNumber
+      responses:
+        200:
+          description: List of students with pagination
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/User'
+              pagination:
+                $ref: '#/definitions/PaginationInfo'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+  /users/{userId}:
+    get:
+      summary: Get current user
+      tags:
+      - User
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: path
+        name: userId
+        type: string
+      responses:
+        200:
+          description: User info or current user info (if userId is not set)
+          schema:
+            $ref: '#/definitions/User'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+        404:
+          description: User was not found
+          schema:
+            $ref: '#/definitions/NotFound'
+  /users/{userId}/vaccinations:
+    get:
+      summary: Get current user's vaccines, that were applied to him
+      tags:
+      - User
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: path
+        name: userId
+        type: string
+      responses:
+        200:
+          description: Current user's vaccines (without price)
+          schema:
+            $ref: '#/definitions/Vaccine'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        404:
+          description: User was not found
+          schema:
+            $ref: '#/definitions/NotFound'
+  /users/{userId}/token:
+    post:
+      summary: Generate token for QR for hcProvider
+      tags:
+        - User
+      produces:
+        - applications/json
+      parameters:
+        - $ref: '#/parameters/Token'
+        - in: path
+          name: userId
+          type: string
+      responses:
+        200:
+          description: Returns token for check, if this user is correct Healthcare provider
+          schema:
+            type: object
+            properties:
+              token: string
+        401:
+          $ref: '#/definitions/Unauthorized'
+        404:
+          description: User was not found
+          schema:
+            $ref: '#/definitions/NotFound'
+  /users/duo/{duoId}:
+    get:
+      summary: Get student by DUO ID from DUO service
+      tags:
+        - User
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/Token'
+        - in: path
+          name: duoId
+          type: string
+          required: true
+      responses:
+        200:
+          description: Student's info
+          schema:
+            $ref: '#/definitions/Student'
+        401:
+          schema:
+            $ref: '#/definitions/Unauthorized'
+        404:
+          description: User was not found
+          schema:
+            $ref: '#/definitions/NotFound'
+  /users/big/{bigId}:
+    get:
+      summary: Get student by bigId from BIG service
+      tags:
+      - User
+      produces:
+      - application/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: path
+        name: bigId
+        type: string
+        required: true
+      responses:
+        200:
+          description: HCP's info
+          schema:
+            $ref: '#/definitions/User'
+        401:
+          schema:
+            $ref: '#/definitions/Unauthorized'
+        404:
+          description: User was not found
+          schema:
+            $ref: '#/definitions/NotFound'
+  /users/login:
+    post:
+      summary: Login user
+      tags:
+      - User
+      produces:
+      - applications/json
+      parameters:
+      - in: body
+        name: user's credentials
+        schema:
+          type: object
+          required:
+          - password
+          properties:
+            bigId:
+              type: string
+            duoId:
+              type: string
+            login:
+              type: string
+            password:
+              type: string
+      responses:
+        200:
+          description: User was logged in
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: Incorrect parameters or credentials
+          schema:
+            $ref: '#/definitions/BadRequest'
+
+  /users/logout:
+    post:
+      summary: Logout user
+      tags:
+      - User
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      responses:
+        200:
+          description: User was logged out
+        401:
+          description: User is not logged in
+
+  /appointments:
+    get:
+      summary: Get appointments for user
+      tags:
+      - Appointment
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      responses:
+        200:
+          description: List of appointments
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Appointment'
+        401:
+          $ref: '#/definitions/Unauthorized'
+    put:
+      summary: Add appointment
+      tags:
+      - Appointment
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: body
+        name: appointment parameters
+        schema:
+          type: object
+          required:
+          - duoIds
+          - event
+          properties:
+            duoIds:
+              type: array
+              description: IDs of student, required
+              items:
+                type: string
+            event:
+              type: string
+              description: ID of event
+      responses:
+        201:
+          description: Appointment was added
+          schema:
+            type: object
+            example:
+              5555555: 5d034f29b746cd3b042b168e
+              6666666: 5d034f29b746cd3b042b168a
+            description: Key is student number (duoId) and value is appointment ID
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+        404:
+          description: Event is not fount
+          schema:
+            $ref: '#/definitions/NotFound'
+
+  /appointments/{appointmentId}:
+    get:
+      summary: Get appointment
+      tags:
+      - Appointment
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: path
+        name: appointmentId
+        type: string
+        required: true
+      responses:
+        200:
+          description: Appointment
+          schema:
+            $ref: '#/definitions/Appointment'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        404:
+          description: Appointment was not found
+          schema:
+            $ref: '#/definitions/NotFound'
+    post:
+      summary: Make action with appointment
+      tags:
+      - Appointment
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: path
+        name: appointmentId
+        type: string
+        required: true
+      - in: body
+        name: action
+        type: string
+        enum: [REGISTER, SHARE_TOKEN, CONFIRM_OPPONENT, FINISH]
+        required: true
+      - in: body
+        name: date
+        type: date
+        required: true
+      - in: body
+        name: token
+        description: Token from the opponent QR
+        type: string
+        required: false
+      responses:
+        200:
+          description: Appointment or generated token
+          schema:
+            $ref: '#/definitions/Appointment'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        404:
+          description: Appointment was not found
+          schema:
+            $ref: '#/definitions/NotFound'
+        409:
+          description: Incorrect action for this appointment
+          schema:
+            $ref: '#/definitions/Conflict'
+
+  /vaccines:
+    put:
+      summary: Add vaccine
+      tags:
+      - Vaccine
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: body
+        name: vaccine parameters
+        schema:
+          $ref: '#/definitions/Vaccine'
+      responses:
+        201:
+          description: Vaccine was added
+          schema:
+            $ref: '#/definitions/Vaccine'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+        409:
+          description: Vaccine already exists
+          schema:
+            $ref: '#/definitions/Conflict'
+    get:
+      summary: Get list of vaccines
+      tags:
+      - Vaccine
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/PageSize'
+      - $ref: '#/parameters/PageIndex'
+      - in: query
+        name: vaccineType
+        required: false
+      - in: query
+        name: batchCode
+        required: false
+      responses:
+        200:
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/Vaccine'
+              pagination:
+                $ref: '#/definitions/Vaccine'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+  /vaccines/search:
+    get:
+      summary: Get list of vaccines by batch code
+      tags:
+      - Vaccine
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: query
+        name: batchCode
+        required: false
+      responses:
+        200:
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Vaccine'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+  /vaccines/types:
+    get:
+      summary: Get list vaccine available types
+      tags:
+      - Vaccine
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      responses:
+        200:
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/VaccineType'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+  /vaccines/{vaccineId}:
+    get:
+      summary: Get vaccine
+      tags:
+      - Vaccine
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: path
+        name: vaccineId
+        type: string
+        required: true
+      responses:
+        200:
+          description: Vaccine
+          schema:
+            $ref: '#/definitions/Vaccine'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+        404:
+          description: Vaccine was not found
+          schema:
+            $ref: '#/definitions/NotFound'
+
+  /events:
+    put:
+      summary: Add event
+      tags:
+      - Event
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: body
+        name: event parameters
+        schema:
+          $ref: '#/definitions/Event'
+      responses:
+        201:
+          description: Event was added
+          schema:
+            $ref: '#/definitions/Event'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+    get:
+      summary: Get list of vaccinations with filters
+      tags:
+      - Event
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - $ref: '#/parameters/PageIndex'
+      - $ref: '#/parameters/PageSize'
+      - in: query
+        name: eventType
+        enum: ['VACCINATION', 'BLOOD_TEST']
+        required: false
+      - in: query
+        name: vaccine
+        required: false
+        description: batch code of vaccine
+      - in: query
+        name: bigId
+        required: false
+      - in: query
+        name: placeName
+        required: false
+      - in: query
+        name: dateFrom
+        required: false
+      - in: query
+        name: dateTo
+        required: false
+      responses:
+        200:
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/Event'
+              pagination:
+                $ref: '#/definitions/PaginationInfo'
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+  /events/{eventId}/students:
+    get:
+      summary: Get list of students for this event
+      tags:
+      - Events
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: path
+        name: eventId
+        type: string
+        required: true
+      responses:
+        200:
+          description: List of students
+          schema:
+            type: array
+            items:
+              type: object
+              required:
+                - duoId
+              properties:
+                _id:
+                  type: string
+                  description: ID of student, if he/she is registered
+                duoId:
+                  type: string
+                  description: Student number of student
+                firstName:
+                  type: string
+                  description: First name of student
+                lastName:
+                  type: string
+                  description: Last name of student
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+        404:
+          description: Event was not found
+          schema:
+            $ref: '#/definitions/NotFound'
+  /events/{eventId}/hcproviders:
+    get:
+      summary: Get list of HCPs for this event
+      tags:
+      - Events
+      produces:
+      - applications/json
+      parameters:
+      - $ref: '#/parameters/Token'
+      - in: path
+        name: eventId
+        type: string
+        required: true
+      responses:
+        200:
+          description: List of HCPs
+          schema:
+            type: array
+            items:
+              type: object
+              required:
+              - bigId
+              properties:
+                bigId:
+                  type: string
+                  description: BIG of healthcare provider
+                firstName:
+                  type: string
+                  description: First name of healthcare provider
+                lastName:
+                  type: string
+                  description: Last name of healthcare provider
+        401:
+          $ref: '#/definitions/Unauthorized'
+        403:
+          $ref: '#/definitions/Forbidden'
+        404:
+          description: Event was not found
+          schema:
+            $ref: '#/definitions/NotFound'

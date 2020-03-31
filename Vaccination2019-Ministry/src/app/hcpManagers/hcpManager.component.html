@@ -1,0 +1,43 @@
+<div class="flex">
+  <div class="filter">
+    <div class="content">
+      <form novalidate autocomplete="off" [formGroup]="filter">
+        <h1>{{ 'Filter.Filter' | translate }}</h1>
+
+        <div class="input-wrapper">
+          <label for="HCPManagerNumber">{{ 'General.Healthcare provider manager number' | translate }}</label>
+          <input class="black-text" id="HCPManagerNumber" name="HCPManagerNumber" type="search" formControlName="HCPManagerNumber"
+                 placeholder="{{ 'General.Healthcare provider manager number' | translate }}"/>
+        </div>
+
+        <button mat-raised-button (click)="search()" color="primary">
+          {{ 'Filter.Search' | translate}}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="search-result">
+    <div class="content">
+      <div class="header">
+        <h1>{{ 'General.Healthcare provider managers' | translate }}</h1>
+        <button mat-raised-button color="primary" (click)="openDialog()">
+          <mat-icon>add</mat-icon>
+          {{ 'General.Add new' | translate }}
+        </button>
+      </div>
+
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="HCPManagerNumber">
+          <th mat-header-cell *matHeaderCellDef>{{ 'General.Healthcare provider manager number' | translate }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.HCPManagerNumber }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openDialog(row)"></tr>
+      </table>
+
+      <mat-paginator hidePageSize pageSize="{{PAGE_SIZE}}" (page)="search($event)"></mat-paginator>
+    </div>
+  </div>
+</div>

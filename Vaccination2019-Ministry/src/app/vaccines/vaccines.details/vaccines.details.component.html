@@ -1,0 +1,67 @@
+<div class="content">
+  <ng-container *ngIf="vaccine">
+    <h1>{{ 'General.Vaccine' | translate }}</h1>
+
+    <div class="input-wrapper">
+      <label>{{ 'General.Name' | translate }}</label>
+      <div class="black-text">{{ vaccine.name }}</div>
+    </div>
+
+    <div class="input-wrapper">
+      <label>{{ 'Vaccine.Vaccine type' | translate }}</label>
+      <div class="black-text">{{ getVaccineType(vaccine.type) }}</div>
+    </div>
+
+    <div class="input-wrapper">
+      <label>{{ 'Vaccine.Batch code' | translate }}</label>
+      <div class="black-text">{{ vaccine.batchCode }}</div>
+    </div>
+
+    <div class="input-wrapper">
+      <label>{{ 'General.Count' | translate }}</label>
+      <div class="black-text">{{ vaccine.availableAmount }}</div>
+    </div>
+
+    <div class="input-wrapper" *ngIf="!authService.isHcpManager()">
+      <label>{{ 'General.Price' | translate }}</label>
+      <div class="black-text">{{ vaccine.price }} €</div>
+    </div>
+
+    <div class="input-wrapper" *ngIf="!authService.isHcpManager()">
+      <label>{{ 'General.Blood test price' | translate }}</label>
+      <div class="black-text">{{ vaccine.bloodTestPrice }} €</div>
+    </div>
+  </ng-container>
+
+  <div class="charts" *ngIf="statistics">
+    <div>
+      <canvas baseChart
+              [data]="pieChartData"
+              [labels]="pieChartLabels"
+              [chartType]="'pie'"
+              [options]="pieChartOptions"
+              [colors]="pieChartColors">
+      </canvas>
+      <table cellspacing="1">
+        <tr *ngFor="let row of pieData">
+          <td>{{ row.label }}</td>
+          <td>{{ row.data }}</td>
+        </tr>
+      </table>
+    </div>
+    <div>
+      <canvas baseChart
+              [datasets]="barChartData"
+              [options]="barChartOptions"
+              [labels]="barChartLabels"
+              [chartType]="'bar'">
+      </canvas>
+      <table cellspacing="1">
+        <tr *ngFor="let row of barData">
+          <td>{{ row.label }}</td>
+          <td>{{ row.data }} €</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

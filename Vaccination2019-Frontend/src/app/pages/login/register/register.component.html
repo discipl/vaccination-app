@@ -1,0 +1,76 @@
+<ion-content>
+  <div padding-horizontal text-center class="logo">
+    <ion-text>
+      <img alt="icon" src="assets/icon/logo-ro.svg">
+    </ion-text>
+  </div>
+  <ion-toolbar class="main-title">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="" class="text-white" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title class="toolbar-background text-white other-title-font-size">
+      {{(isHealthcareProvider ? 'General.healthcareProvider' : 'General.student') | translate}}
+    </ion-title>
+  </ion-toolbar>
+  <form novalidate autocomplete="off" [formGroup]="registerForm">
+    <div class="inputs-wrapper">
+      <div *ngIf="isHealthcareProvider else otherRole">
+        <ion-input class="gray-text-login" name="number" type="text" maxlength="15" [formControlName]="fieldName"
+          placeholder="{{'Login.bigNumber' | translate}}">
+        </ion-input>
+        <p class='validation-error'>
+          <span *ngIf="registerForm.controls[fieldName].hasError('required') && registerForm.controls[fieldName].dirty">
+            {{'Login.bigIdEmpty' | translate}}
+          </span>
+          <span *ngIf="registerForm.controls[fieldName].hasError('pattern') && registerForm.controls[fieldName].dirty">
+            {{'Login.numberPattern' | translate}}
+          </span>
+          <span *ngIf="registerForm.controls[fieldName].hasError('invalid') && registerForm.controls[fieldName].dirty">
+            {{'Login.bigNumberInvalid' | translate}}
+          </span>
+        </p>
+      </div>
+
+      <ng-template #otherRole>
+        <ion-input class="gray-text-login" name="number" type="text" maxlength="15" [formControlName]="fieldName"
+          placeholder="{{'Login.duoNumber' | translate}}">
+        </ion-input>
+        <p class='validation-error'>
+          <span *ngIf="registerForm.controls[fieldName].hasError('required') && registerForm.controls[fieldName].dirty">
+            {{'Login.duoIdEmpty' | translate}}
+          </span>
+          <span *ngIf="registerForm.controls[fieldName].hasError('pattern') && registerForm.controls[fieldName].dirty">
+            {{'Login.numberPattern' | translate}}
+          </span>
+          <span *ngIf="registerForm.controls[fieldName].hasError('invalid') && registerForm.controls[fieldName].dirty">
+            {{'Login.duoIdInvalid' | translate}}
+          </span>
+        </p>
+      </ng-template>
+
+      <ion-input class="gray-text-login" name="password" type="password" minlength="6" maxlength="10"
+        formControlName="password" placeholder="{{ 'Login.password' | translate }}">
+      </ion-input>
+      <p class='validation-error'>
+        <span *ngIf="registerForm.controls['password'].hasError('required') && registerForm.controls['password'].dirty">
+          {{'Login.passwordEmpty' | translate}}
+        </span>
+        <span *ngIf="registerForm.controls['password'].hasError('minlength') && registerForm.controls['password'].dirty">
+          {{'Login.passwordError' | translate}}
+        </span>
+        <span *ngIf="registerForm.controls['password'].hasError('invalid') && registerForm.controls['password'].dirty">
+          {{'Login.passwordInvalid' | translate}}
+        </span>
+      </p>
+    </div>
+
+    <div class="content-padding">
+      <ion-button class="button-style" (click)="register()">
+        {{'Login.createAccountBtn' | translate}}
+      </ion-button>
+      <ion-button class="second-button-style" expand="block" fill="clear" routerLink="../" routerDirection="back">
+        {{'Login.existingAccountText' | translate}}
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

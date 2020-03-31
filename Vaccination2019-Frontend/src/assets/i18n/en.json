@@ -1,0 +1,141 @@
+{
+	"General": {
+		"title": "Vaccination",
+		"register": "Register as",
+		"login": "Login as:",
+		"registerAsHealthcareProvider": "Healthcare provider",
+		"registerAsStudent": "Student",
+		"healthcareProvider": "Healthcare provider's registration",
+		"student": "Student's registration",
+		"tabAppointment": "Appointments",
+		"tabSettings": "Settings",
+    "tabLogout": "Logout",
+    "Events": "Events",
+		"noConnection": "You have no network connection. Try again later.",
+		"error": "Sorry, something went wrong. Try again later",
+    "yes": "Yes",
+    "no": "No",
+    "vacc": "Vaccines",
+    "Unknown": "Unknown",
+    "Students": "Students"
+	},
+	"Login": {
+		"loginBtn": "Login",
+		"creteAccount": "Create an account",
+		"bigNumber": "BIG number",
+		"duoNumber": "Student ID",
+		"password": "Password",
+		"bigIdEmpty": "Please add BIG number",
+		"bigNumberInvalid": "Please enter valid BIG number",
+		"duoIdEmpty": "Please add student ID",
+		"duoIdInvalid": "Please enter valid student ID",
+		"numberPattern": "Only numbers are allowed",
+		"passwordEmpty": "Please add password",
+		"passwordError": "Password should include at least 6 characters length",
+		"passwordInvalid": "Password enter valid password",
+		"createAccountBtn": "Sign up",
+		"existingAccountText": "Already have an account?",
+		"error": "Incorrect credentials"
+	},
+	"Profile": {
+		"title": "Profile",
+		"fName": "First name",
+		"lName": "Last name",
+		"dob": "Date of birth",
+		"address": "Address",
+		"zipCode": "Zip code",
+		"country": "Country",
+		"number": "Number",
+		"study": "Study",
+		"crebo": "CREBO",
+		"school": "School",
+		"goTab": "Go to tabs screen"
+	},
+  "Settings": {
+    "profile": "Profile",
+    "privacy": "Privacy settings",
+    "title": "Settings"
+  },
+  "Privacy": {
+    "shareWith": "Share information with",
+    "title": "Privacy settings",
+    "DUO": "DUO",
+    "GGD": "GGD / Hospitals",
+    "internship": "Internship",
+    "MEVA": "MEVA",
+    "personalInfo":"Personal information",
+    "medicalInfo":"Medical information",
+    "financeInfo":"Financial information"
+  },
+	"Appointments": {
+		"title": "My appointments",
+		"statusTitle": "Status",
+		"days": [
+			"Sun",
+			"Mon",
+			"Tue",
+			"Wed",
+			"Thu",
+			"Fri",
+			"Sat"
+		],
+		"months": [
+			"january",
+			"february",
+			"march",
+			"april",
+			"may",
+			"june",
+			"july",
+			"august",
+			"september",
+			"october",
+			"november",
+			"december"
+		],
+		"vaccinationTitle": "Vaccination",
+		"status": {
+			"NEW": "New",
+			"REGISTERED": "Registered",
+			"CONFIRMED_BY_STUDENT": "Confirmed by student",
+			"CONFIRMED_BY_HEALTHCARE_PROVIDER": "Confirmed by healthcare provider",
+			"CONFIRMED": "Confirmed",
+			"FINISHED_BY_STUDENT": "Finished by student",
+			"FINISHED_BY_HEALTHCARE_PROVIDER": "Finished by healthcare provider",
+			"FINISHED": "Finished"
+		},
+		"checkBtn": "Check",
+		"registerBtn": "Register",
+		"shareBtn": "Share my info",
+		"doneBtn": "Done",
+		"appointment": "Appointment",
+		"confirmCancelTitle": "Do you want to cancel an appointment?",
+		"cancelSuccess": "Your appointment is canceled",
+		"cancelError": "Sorry, something went wrong. Try again later",
+		"confirmSuccess": "Your appointment is confirmed",
+		"shareQrByHEALTHCARE_PROVIDER": "Share this QR code with student",
+		"shareQrBySTUDENT": "Share this QR code with healthcare provider",
+		"incorrectAppointmentId": "Incorrect appointment ID",
+		"noAppointments": "You have no appointments yet",
+		"showFinished": "Show finished events",
+		"date": "Date",
+		"student": "Student",
+		"healthcareProvider": "Healthcare provider",
+    "Vaccine batch code": "Vaccine batch code",
+    "Scan vaccine": "Scan vaccine",
+    "Vaccine isn't at the appointment": "Vaccine isn't at the appointment"
+	},
+  "Events": {
+    "event": "Event",
+    "No events": "No events"
+  },
+	"errors": {
+		"401": "Your session was expired",
+		"500": "Something went wrong. Try again later",
+		"502": "Something went wrong. Try again later"
+	},
+	"eventType": {
+		"VACCINATION": "Vaccination",
+		"BLOOD_TEST": "Blood test"
+	}
+}

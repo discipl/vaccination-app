@@ -1,0 +1,612 @@
+// http://ionicframework.com/docs/theming/
+@import '~@ionic/angular/css/core.css';
+@import '~@ionic/angular/css/normalize.css';
+@import '~@ionic/angular/css/structure.css';
+@import '~@ionic/angular/css/typography.css';
+@import '~@ionic/angular/css/display.css';
+@import '~@ionic/angular/css/padding.css';
+@import '~@ionic/angular/css/float-elements.css';
+@import '~@ionic/angular/css/text-alignment.css';
+@import '~@ionic/angular/css/text-transformation.css';
+@import '~@ionic/angular/css/flex-utils.css';
+
+* {
+  font-family: 'rijksoverheidsans' !important;
+  letter-spacing: 0 !important;
+}
+
+.animated {
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+.animated.infinite {
+  animation-iteration-count: infinite;
+}
+
+.animated.hinge {
+  animation-duration: 2s;
+}
+
+.animated.flipOutX,
+.animated.flipOutY,
+.animated.bounceIn,
+.animated.bounceOut {
+  animation-duration: .75s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fadeInDown {
+  animation-name: fadeInDown;
+}
+
+ion-toolbar {
+  font-size: 1em;
+
+  &, & > * {
+    --background: #296797;
+    background-color: #296797;
+    font-weight: normal;
+    --min-height: 50px;
+  }
+
+  ion-buttons {
+    position: absolute;
+  }
+
+  &.main-title {
+    &, ion-title, .toolbar-container {
+      height: 70px;
+      line-height: 70px;
+      --min-height: 70px;
+      width: 100%;
+      padding: 0;
+    }
+
+    ion-back-button {
+      width: 50px;
+
+      button {
+        margin-top: -2px !important;
+      }
+    }
+  }
+
+  &.main-title-font-size {
+    &, ion-title, .toolbar-container {
+      font-size: 24px;
+    }
+  }
+}
+
+.header-md:after {
+  display: none;
+}
+
+.theme-color {
+  color: #296797 !important;
+}
+
+.theme-BG-color {
+  background-color: #296797 !important;
+}
+
+.toolbar-title.toolbar-title-md,
+.toolbar-title.toolbar-title-ios,
+.toolbar-title.toolbar-title-wp {
+  color: white;
+}
+
+.text-white {
+  color: #fff !important;
+}
+
+.other-title-font-size {
+  font-size: 17px
+}
+
+.capitalize {
+  text-transform: uppercase;
+}
+
+.bg-page {
+  background-color: #f3f3f3;
+}
+
+.inputs-wrapper {
+  background-color: #F3F3F3;
+  padding: 60px 20px;
+  margin-bottom: 30px;
+
+  ion-input {
+    background-color: white;
+    --padding-start: 20px !important;
+    --padding-top: 0px !important;
+    --padding-end: 20px !important;
+    --padding-bottom: 0px !important;
+    margin-top: 15px;
+    box-sizing: border-box;
+
+    &, input {
+      line-height: 25px;
+      height: 45px;
+    }
+  }
+
+  ion-input:first-child {
+    margin-top: 0;
+  }
+}
+
+.button-style {
+  --border-radius: 3px;
+  width: 100%;
+  color: white;
+  font-size: 17px;
+}
+
+.second-button-style {
+  width: 100%;
+  color: #296797;
+  font-size: 17px;
+}
+
+.link-button {
+  width: 100%;
+  font-size: 17px;
+  color: #296797;
+  background-color: #fff;
+  text-align: center;
+  align-items: center;
+}
+
+.validation-error {
+  color: red;
+  padding-left: 15px;
+}
+
+.date-format {
+  padding: 0;
+}
+
+.tabs-md .tabbar {
+  background-color: white;
+}
+
+.row-color {
+  background-color: white;
+  border-bottom: 1px solid;
+  border-color: #f3f3f3;
+}
+
+.black-text {
+  color: black;
+  font-size: 17px;
+}
+
+.gray-text {
+  color: #888888;
+  font-size: 17px;
+}
+
+ion-toolbar {
+  text-align: center;
+  --padding-bottom: 0px;
+  --padding-end: 0px;
+  --padding-start: 0px;
+  --padding-top: 0px;
+}
+
+.logo {
+  line-height: 0;
+  padding-bottom: 30px;
+}
+
+.button.button-native .button-inner {
+  text-transform: none !important;
+}
+
+.button-style, .second-button-style {
+  text-transform: none !important;
+}
+
+ion-back-button button, .button-style {
+  height: 45px;
+  margin: 0 0 15px;
+  text-align: center;
+}
+
+.content-padding {
+  box-sizing: border-box;
+  padding: 0 20px !important;
+}
+
+.content-padding-top {
+  --padding-top: 20px;
+}
+
+.validation-error {
+  margin-top: 5px;
+  font-size: 12px;
+  height: 12px;
+}
+
+.status {
+  &.NEW,
+  &.REGISTERED {
+    color: #296797 !important;;
+  }
+
+  &.CONFIRMED_BY_STUDENT,
+  &.CONFIRMED_BY_HEALTHCARE_PROVIDER,
+  &.CONFIRMED {
+    color: #D8B048 !important;;
+  }
+
+  &.FINISHED_BY_STUDENT,
+  &.FINISHED,
+  &.FINISHED_BY_HEALTHCARE_PROVIDER {
+    color: #51D54E !important;;
+  }
+}
+
+ion-refresher {
+  background: white;
+}
+
+.qr-container {
+  text-align: center;
+
+  .qr-title {
+    width: 100%;
+    margin-top: 50px;
+  }
+
+  .qr-code-container {
+    padding: 30px;
+    height: calc(100vh - 150px);
+    min-height: 320px;
+
+    img {
+      box-sizing: content-box;
+    }
+  }
+
+  ion-back-button {
+    button {
+      width: 100%;
+    }
+
+    ion-icon {
+      display: none;
+    }
+  }
+}
+
+.profile-vaccines {
+  ion-icon {
+    float: right;
+    height: 29px;
+    width: 29px;
+    margin-top: -6px;
+  }
+}
+
+.profile-vaccines-list {
+  &.open {
+    display: block;
+  }
+
+  &.close {
+    display: none;
+  }
+
+  .vaccine {
+    padding: 0 !important;
+    margin: 15px 0 0 !important;
+
+    & > * {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    .name {
+
+    }
+
+    .type, .batchCode {
+      font-size: 14px;
+      color: gray;
+      padding: 8px 0 0 8px !important;
+    }
+  }
+}
+
+.profile-qr {
+  text-align: center;
+  margin: 20px 0 0;
+}
+
+.choose-date {
+  .choose-date-buttons {
+    display: flex;
+
+    ion-button {
+      margin: 0 3px 6px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .message {
+    color: red;
+    font-size: 12px;
+    margin: 6px 0 12px;
+    text-align: center;
+  }
+}
+
+button {
+  --border-radius: 3px;
+}
+
+.date-format {
+  text-transform: capitalize;
+}
+
+.item-card {
+  box-shadow: none;
+  background: #fff;
+  margin: 0 20px 10px 20px;
+  border-radius: 3px;
+
+  &:first-child {
+    margin-top: 30px;
+  }
+
+  .item {
+    .status {
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    h3 {
+      font-size: 17px;
+      line-height: 24px;
+      color: #000;
+      margin: 5px 0;
+    }
+
+    .date-row {
+      margin-bottom: 5px;
+      display: flex;
+
+      .date-delimiter {
+        padding: 0 5px;
+      }
+
+      img {
+        width: 16px;
+        display: inline-block;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+    }
+
+    .gray-text {
+      color: rgba(0, 0, 0, 0.5);
+      font-size: 12px;
+      display: inline-block;
+      margin-left: 0;
+      line-height: 16px;
+    }
+
+    .locate-row {
+      color: rgba(0, 0, 0, 0.5);
+      font-size: 12px;
+      display: inline-block;
+      line-height: 16px;
+
+      img {
+        width: 16px;
+        display: inline-block;
+        margin-right: 7px;
+        vertical-align: middle;
+      }
+    }
+
+    .arrow-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 12px;
+      }
+    }
+  }
+}
+
+.event-vaccines {
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.appointment-date-container {
+  padding: 30px 20px 0 20px;
+
+  .appointment-date {
+    color: #296797;
+    font-size: 22px;
+    line-height: 24px;
+    margin-bottom: 8px;
+
+    .datetext {
+      padding: 0;
+      margin: 0;
+    }
+  }
+  .appointment-time {
+    color: #000000;
+    font-size: 17px;
+    line-height: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid  rgba(0, 0, 0, 0.1);
+
+    .datetext{
+      padding: 0;
+      margin: 0;
+    }
+  }
+}
+
+.appointment-name {
+  margin-bottom: 20px;
+}
+
+.check-btn-style {
+  float: right;
+  width: auto;
+  height: auto;
+  font-size: 12px;
+  padding: 0;
+  vertical-align: middle;
+  margin: 2px 0 0;
+}
+
+.check-circle-style {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  vertical-align: middle;
+  margin-top: -2px;
+}
+
+.success {
+  color: #51D54E;
+}
+
+.error {
+  color: red;
+}
+
+.appointment-map {
+  height: 180px;
+  width: 100%;
+}
+
+.appointment-clinic-address, .event-clinic-address {
+  padding: 20px 20px 0 20px;
+
+  .small-text {
+    padding-bottom: 20px;
+    margin: 0;
+    font-size: 12px;
+    line-height: 16px;
+    color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.appointment-clinic-address .small-text {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.general-row {
+  padding: 10px 20px;
+
+  .small-text {
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 12px;
+    line-height: 16px;
+    margin: 0;
+  }
+
+  .large-text {
+    color: #000000;
+    font-size: 17px;
+    line-height: 24px;
+    margin-bottom: 8px;
+  }
+}
+
+.appointment-status-wrapper {
+  &.status-row {
+    padding-top: 0;
+
+    .large-text {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      padding-bottom: 20px;
+    }
+  }
+  padding: 20px;
+  margin: 0;
+
+}
+.appointment-type {
+  padding: 20px 20px 0 20px;
+  margin: 0;
+  .large-text {
+    color: #296797;
+    font-size: 22px;
+    line-height: 24px;
+    margin-bottom: 8px;
+  }
+  .small-text {
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 12px;
+    line-height: 16px;
+    margin: 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    &.no-border {
+      border-bottom-width: 0;
+      padding-bottom: 5px;
+    }
+  }
+}
+
+.btn-style {
+  padding: 0 20px 0 20px;
+  width: 100%;
+  font-size: 17px;
+  border-radius: 3px;
+}
+
+ion-datetime {
+  padding: 0;
+}
+
+.scan-vaccine-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

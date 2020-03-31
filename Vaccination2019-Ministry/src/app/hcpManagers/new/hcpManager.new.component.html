@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>{{ !!hcpManager ? ('General.Healthcare provider manager' | translate) : ('HcpManager.New healthcare provider manager' | translate) }}</h1>
+<div mat-dialog-content>
+  <form novalidate autocomplete="off" [formGroup]="form">
+    <div class="input-wrapper">
+      <label for="HCPManagerNumber">{{ 'General.Healthcare provider manager number' | translate }}</label>
+      <input class="black-text" id="HCPManagerNumber" name="HCPManagerNumber" type="text" formControlName="HCPManagerNumber"
+             placeholder="{{ 'General.Healthcare provider manager number' | translate }}"/>
+      <p *ngIf="form && form.controls['HCPManagerNumber'].errors" class="validation-error">
+        {{ form.controls['HCPManagerNumber'].errors.msg }}
+      </p>
+    </div>
+
+    <div class="input-wrapper" *ngIf="!hcpManager">
+      <label for="password">{{ 'General.Password' | translate }}</label>
+      <input class="black-text" id="password" name="password" type="password" formControlName="password"
+             placeholder="{{ 'General.Password' | translate }}"/>
+      <p *ngIf="form && form.controls['password'].errors" class="validation-error">
+        {{ form.controls['password'].errors.msg }}
+      </p>
+    </div>
+
+  </form>
+</div>
+
+<button mat-raised-button color="primary" (click)="add()" *ngIf="!hcpManager">{{ 'General.Add' | translate }}</button>
+<button mat-button (click)="cancel()">{{ 'General.Cancel' | translate }}</button>

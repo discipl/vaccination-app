@@ -1,0 +1,42 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
+@include mat-core();
+
+$md-mcgpalette0: (
+  50 : #e5edf3,
+  100 : #bfd1e0,
+  200 : #94b3cb,
+  300 : #6995b6,
+  400 : #497ea7,
+  500 : #296797,
+  600 : #245f8f,
+  700 : #1f5484,
+  800 : #194a7a,
+  900 : #0f3969,
+  A100 : #9dc6ff,
+  A200 : #6aa9ff,
+  A400 : #378bff,
+  A700 : #1e7dff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #ffffff,
+    A700 : #ffffff,
+  )
+);
+
+$my-app-primary: mat-palette($md-mcgpalette0);
+$my-app-accent:  mat-palette($mat-pink, 500, 900, A100);
+$my-app-warn:    mat-palette($mat-deep-orange);
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
+@include angular-material-theme($my-app-theme);

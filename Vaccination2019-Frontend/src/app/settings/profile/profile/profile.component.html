@@ -1,0 +1,141 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="toolbar-background text-white other-title-font-size">
+      {{'Profile.title' | translate}}
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button class="more"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="user-details">
+  <div class="user-details-items" *ngIf="!!user">
+    <div class="row-color" *ngIf="!!user.firstName">
+      <div class="black-text">
+        {{'Profile.fName' | translate}}
+      </div>
+      <div class="gray-text">
+        {{user.firstName}}
+      </div>
+    </div>
+
+    <div class="row-color" *ngIf="!!user.lastName">
+      <div class="black-text">
+        {{'Profile.lName' | translate}}
+      </div>
+      <div class="gray-text">
+        {{user.lastName}}
+      </div>
+    </div>
+
+    <div class="row-color" *ngIf="!!user.dateOfBirth">
+      <div class="black-text">
+        {{'Profile.dob' | translate}}
+      </div>
+      <div class="gray-text date-format">
+        {{ user.dateOfBirth | date:'MMM d, y':undefined:getLocale()}}
+      </div>
+    </div>
+
+    <div class="row-color" *ngIf="!!user.address.address">
+      <div class="black-text">
+        {{'Profile.address' | translate}}
+      </div>
+      <div class="gray-text">
+        {{user.address.address}}
+      </div>
+    </div>
+
+    <div class="row-color" *ngIf="!!user.address.zipCode">
+      <div class="black-text">
+        {{'Profile.zipCode' | translate}}
+      </div>
+      <div class="gray-text">
+        {{user.address.zipCode}}
+      </div>
+    </div>
+
+    <div class="row-color" *ngIf="!!user.address.country">
+      <div class="black-text">
+        {{'Profile.country' | translate}}
+      </div>
+      <div class="gray-text">
+        {{user.address.country}}
+      </div>
+    </div>
+
+    <div class="row-color">
+      <div class="black-text">
+        {{'Profile.number' | translate}}
+      </div>
+      <div class="gray-text">
+        {{isHealthcareProvider ? user.bigId : user.duoId}}
+      </div>
+    </div>
+
+    <div class="row-color" *ngIf="!!user.student?.study">
+      <div class="black-text">
+        {{'Profile.study' | translate}}
+      </div>
+      <div class="gray-text">
+        {{user.student.study}}
+      </div>
+    </div>
+
+    <div class="row-color" *ngIf="!!user.student?.school">
+      <div class="black-text">
+        {{'Profile.school' | translate}}
+      </div>
+      <div class="gray-text">
+        {{user.student.school.name}}
+      </div>
+    </div>
+
+    <div class="row-color" *ngIf="!!user.student?.school">
+      <div class="black-text">
+        {{'Profile.address' | translate}}
+      </div>
+      <div class="gray-text">
+        {{user.student.school.address}}
+      </div>
+    </div>
+
+    <div class="row-color" *ngIf="!!user.student?.school">
+      <div class="black-text">
+        {{'Profile.zipCode' | translate}}
+      </div>
+      <div class="gray-text">
+        {{user.student.school.zipCode}}
+      </div>
+    </div>
+
+    <div class="row-color" *ngIf="!!user.student?.school">
+      <div class="black-text">
+        {{'Profile.country' | translate}}
+      </div>
+      <div class="gray-text">
+        {{user.student.school.country}}
+      </div>
+    </div>
+
+    <div class="row-color" *ngIf="!!vaccines">
+      <div class="black-text profile-vaccines" (click)="toggleVaccines()">
+        {{'General.vacc' | translate}} ({{vaccines.length}})
+        <ion-icon name="arrow-dropdown" *ngIf="!vaccinesOpen"></ion-icon>
+        <ion-icon name="arrow-dropup" *ngIf="vaccinesOpen"></ion-icon>
+      </div>
+      <div class="profile-vaccines-list {{ vaccinesOpen ? 'open' : 'close' }}">
+        <div *ngFor="let vaccine of vaccines" class="vaccine">
+          <div class="name">{{ vaccine.name }}</div>
+          <div class="type">{{ formatVaccineType(vaccine.type) }}</div>
+          <div class="batchCode">{{ vaccine.batchCode }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-qr" *ngIf="!!tokenData">
+      <qr-code value="{{ tokenData }}" size="230"></qr-code>
+    </div>
+  </div>
+</ion-content>

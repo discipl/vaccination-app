@@ -1,0 +1,134 @@
+<div class="content">
+  <ng-container *ngIf="vaccination">
+
+    <h1>{{ 'General.Vaccination' | translate }}</h1>
+
+    <h2>{{ 'General.Vaccines' | translate }}</h2>
+    <ul>
+      <li *ngFor="let vaccine of vaccination.vaccines">{{ vaccine.batchCode }} - {{ getVaccineType(vaccine.type._id) }}</li>
+    </ul>
+
+    <div *ngFor="let step of vaccination.steps; let i = index">
+      <h2 *ngIf="i !== 3">{{ 'General.Step' | translate }} {{ i + 1 }}</h2>
+      <h2 *ngIf="i === 3">{{ 'General.Blood test' | translate }}</h2>
+
+      <div class="input-wrapper el-2 el-2-1">
+        <label>{{ 'General.Date' | translate }}</label>
+        <div class="black-text" >{{ step.allowedDates[0] | date:'dd-MM-yyyy' }}</div>
+      </div>
+
+    <div class="input-wrapper el-2 el-2-2">
+        <label>{{ 'General.Alternative date' | translate }}</label>
+        <div class="black-text" >{{ step.allowedDates[1] | date:'dd-MM-yyyy' }}</div>
+      </div>
+
+      <h3>{{ 'General.Place' | translate }}</h3>
+
+      <div class="input-wrapper">
+        <label>{{ 'General.Name' | translate }}</label>
+        <div class="black-text" >{{ step.place?.name }}</div>
+      </div>
+
+      <div class="input-wrapper">
+        <label>{{ 'General.Address' | translate }}</label>
+        <div class="black-text" >{{ step.place?.address }}</div>
+      </div>
+
+      <div class="input-wrapper el-2 el-2-1">
+        <label>{{ 'General.Country' | translate }}</label>
+        <div class="black-text" >{{ step.place?.addressDetails?.country }}</div>
+      </div>
+
+      <div class="input-wrapper el-2 el-2-2">
+        <label>{{ 'General.State' | translate }}</label>
+        <div class="black-text" >{{ step.place?.addressDetails?.state }}</div>
+      </div>
+
+      <div class="input-wrapper el-2 el-2-1">
+        <label>{{ 'General.City' | translate }}</label>
+        <div class="black-text" >{{ step.place?.addressDetails?.city }}</div>
+      </div>
+
+      <div class="input-wrapper el-2 el-2-2">
+        <label>{{ 'General.ZIP code' | translate }}</label>
+        <div class="black-text" >{{ step.place?.addressDetails?.zipCode }}</div>
+      </div>
+
+      <div class="input-wrapper el-2 el-2-1">
+        <label>{{ 'General.Street address' | translate }}</label>
+        <div class="black-text" >{{ step.place?.addressDetails?.streetAddress }}</div>
+      </div>
+
+      <div class="input-wrapper el-2 el-2-2">
+        <label>{{ 'General.Street number' | translate }}</label>
+        <div class="black-text" >{{ step.place?.addressDetails?.streetNumber }}</div>
+      </div>
+
+      <div *ngIf="showMap(step.place)" class="map">
+        <agm-map [style.height.px]="300"
+          [latitude]="step.place.latitude"
+          [longitude]="step.place.longitude">
+          <agm-marker
+            [latitude]="step.place.latitude"
+            [longitude]="step.place.longitude">
+          </agm-marker>
+        </agm-map>
+      </div>
+
+      <h3>{{ 'Event.Healthcare providers' | translate }}</h3>
+
+      <ng-container *ngIf="hcProviders">
+        <div *ngFor="let hcProvider of hcProviders[i];" class="hc-provider">
+          <div class="bigId">{{ hcProvider.bigId }}</div>
+          <div class="name">{{ hcProvider.firstName }} {{ hcProvider.lastName}}</div>
+        </div>
+      </ng-container>
+
+      <h3>{{ 'General.Reports' | translate }}</h3><br/>
+
+      <div *ngIf="isHCPManager()" class="input-wrapper el-2 el-2-2">
+        <label>{{ 'General.Reserved' | translate }}</label>
+        <div class="black-text" >{{ step.initialCount - step.availableCount }}</div>
+      </div>
+
+      <div *ngIf="isHCPManager()" class="input-wrapper el-2 el-2-2">
+        <label>{{ 'General.Total' | translate }}</label>
+        <div class="black-text" >{{ step.initialCount }}</div>
+      </div>
+
+      <div class="charts" *ngIf="stepData[i]?.statistics">
+        <div>
+          <canvas baseChart
+                  [data]="stepData[i].pieChartData"
+                  [labels]="stepData[i].pieChartLabels"
+                  [chartType]="'pie'"
+                  [options]="pieChartOptions"
+                  [colors]="pieChartColors">
+          </canvas>
+          <div>
+            <table cellspacing="1">
+              <tr *ngFor="let row of stepData[i].pieData">
+                <td>{{ row.label }}</td>
+                <td>{{ row.data }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div>
+          <canvas baseChart
+                  [datasets]="stepData[i].barChartData"
+                  [options]="barChartOptions"
+                  [labels]="stepData[i].barChartLabels"
+                  [chartType]="'bar'">
+          </canvas>
+          <table cellspacing="1">
+            <tr *ngFor="let row of stepData[i].barData">
+              <td>{{ row.label }}</td>
+              <td>{{ row.data }} €</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

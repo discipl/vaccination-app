@@ -1,0 +1,115 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="isHealthcareProvider ? '/tabs/events' : '/tabs/appointments'" class="text-white"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="toolbar-background text-white other-title-font-size">
+      {{'Appointments.appointment' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="general-content">
+  <ng-container *ngIf="!!appointment">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" [pullMin]="60" [pullMax]="60">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
+    <div class="appointment-type">
+      <div class="large-text">
+        {{'eventType.' + appointment.eventType | translate}}
+      </div>
+      <div class="small-text no-border" *ngFor="let vaccine of appointment.vaccines">
+        {{ formatVaccineType(vaccine.type) }}
+      </div>
+    </div>
+
+    <div class="general-row">
+      <div class="large-text" *ngIf="!!appointment.place">
+        {{appointment.place.name}}
+      </div>
+    </div>
+
+    <div #map class="appointment-map"></div>
+
+    <div class="appointment-clinic-address">
+      <div class="small-text">
+        <img alt="icon" src="../../../assets/icon/pin.svg">
+        {{appointment.place.address}}
+      </div>
+    </div>
+
+    <div class="general-row" *ngIf="appointment.chosenDate">
+      <div class="small-text">
+        {{'Appointments.date' | translate}}
+      </div>
+      <div class="large-text date-format">
+        {{ appointment.chosenDate | date:'EEEE d MMM y':undefined:getLocale()}}
+      </div>
+    </div>
+
+    <div class="general-row">
+      <div class="scan-vaccine-buttons">
+        <div class="small-text">
+          {{ 'Appointments.Vaccine batch code' | translate }}
+        </div>
+        <ion-button (click)="scanVaccine()" fill="clear" class="check-btn-style"
+                    *ngIf="isHealthcareProvider && !allVaccinesChecked()">
+          {{ 'Appointments.Scan vaccine' | translate }}
+        </ion-button>
+      </div>
+
+      <div class="large-text" *ngFor="let vaccine of appointment.vaccines">
+        <ion-icon *ngIf="isVaccineChecked(vaccine.batchCode)" class="check-circle-style success" name="checkmark-circle"></ion-icon>
+        {{ vaccine.batchCode }}
+      </div>
+    </div>
+
+    <div class="general-row" *ngIf="appointment.status !== objStatus.NEW">
+      <div class="small-text">
+        {{ (isHealthcareProvider ? 'Appointments.student' : 'Appointments.healthcareProvider') | translate }}
+
+        <ion-button *ngIf="hasAction(objAvailableActions.CONFIRM_OPPONENT) && (!isHealthcareProvider || allVaccinesChecked())" class="check-btn-style"
+                    fill="clear" (click)="check()">
+          {{'Appointments.checkBtn' | translate}}
+        </ion-button>
+      </div>
+      <div class="large-text appointment-name">
+
+        <ng-container *ngIf="!isHealthcareProvider">
+          <ion-icon *ngIf="fullName && !healthcareProviderError" class="check-circle-style success" name="checkmark-circle"></ion-icon>
+          <ion-icon *ngIf="healthcareProviderError" class="check-circle-style error" name="close-circle"></ion-icon>
+        </ng-container>
+        <ng-container *ngIf="isHealthcareProvider">
+          <ion-icon *ngIf="!hasAction(objAvailableActions.CONFIRM_OPPONENT)"
+                    class="check-circle-style success" name="checkmark-circle"></ion-icon>
+        </ng-container>
+
+        {{ healthcareProviderError || fullName }}
+      </div>
+    </div>
+
+    <div class="general-row">
+      <div class="small-text">
+        {{ 'Appointments.statusTitle' | translate }}
+      </div>
+      <div class="large-text status" [ngClass]="appointment.status">
+        {{('Appointments.status.' + appointment.status) | translate}}
+      </div>
+    </div>
+
+    <div class="content-padding">
+      <div *ngIf="hasAction(objAvailableActions.SHARE_TOKEN)">
+        <ion-button class="button-style" (click)="share()">
+          {{'Appointments.shareBtn' | translate}}
+        </ion-button>
+      </div>
+
+      <div *ngIf="hasAction(objAvailableActions.FINISH)">
+        <ion-button class="button-style" (click)="done()">
+          {{ 'Appointments.doneBtn' | translate }}
+        </ion-button>
+      </div>
+    </div>
+  </ng-container>
+</ion-content>

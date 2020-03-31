@@ -1,0 +1,9 @@
+<div class="logo">
+  <img alt="icon" src="../assets/icons/logo-ro.svg">
+</div>
+
+<div>
+  <router-outlet></router-outlet>
+</div>
+
+<ngx-loading [show]="this.loaderService.count > 0"></ngx-loading>

@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/events" class="text-white"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="toolbar-background text-white other-title-font-size">
+      {{'Events.event' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="general-content">
+  <ng-container *ngIf="!!event">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" [pullMin]="60" [pullMax]="60">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
+    <div class="appointment-type">
+      <div class="large-text">
+        {{'eventType.' + event.type | translate}}
+      </div>
+    </div>
+
+    <div class="general-row">
+      <div class="small-text">
+        {{ 'General.vacc' | translate }}
+      </div>
+      <div class="large-text" *ngFor="let vaccine of event.vaccines">
+        {{ vaccine.batchCode }}
+      </div>
+    </div>
+
+    <div class="general-row">
+      <div class="large-text" *ngIf="!!event.place">
+        {{event.place.name}}
+      </div>
+    </div>
+
+    <div #map class="appointment-map"></div>
+
+    <div class="event-clinic-address">
+      <div class="small-text">
+        <img alt="icon" src="../../../assets/icon/pin.svg">
+        {{event.place.address}}
+      </div>
+    </div>
+
+    <ng-container *ngIf="!isStudent()">
+      <div class="general-row">
+        <div class="small-text">
+          {{ 'General.Students' | translate }}
+        </div>
+        <div class="large-text" *ngFor="let student of students">
+          <a [routerLink]="'/tabs/appointments/' + student.appointmentId" >{{ student.lastName }} {{ student.firstName }}</a>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="content-padding choose-date" *ngIf="isStudent()">
+      <div class="choose-date-buttons">
+        <ion-button *ngFor="let date of event.allowedDates"
+                    class="button-style date-format"
+                    [color]="date === this.chosenDate ? 'primary' : 'medium'"
+                    (click)="choseDate(date)">
+          {{ date | date:'dd-MM-yyyy':undefined:getLocale()}}
+        </ion-button>
+      </div>
+      <div *ngIf="chosenDateMsg" class="message">{{ chosenDateMsg }}</div>
+      <ion-button class="button-style" (click)="register()">
+        {{'Appointments.registerBtn' | translate}}
+      </ion-button>
+    </div>
+
+  </ng-container>
+</ion-content>

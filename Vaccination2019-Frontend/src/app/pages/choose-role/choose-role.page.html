@@ -1,0 +1,23 @@
+<ion-content>
+  <div padding-horizontal text-center class="logo">
+    <img alt="icon" src="assets/icon/logo-ro.svg">
+  </div>
+
+  <ion-toolbar class="main-title main-title-font-size">
+    <ion-title class="toolbar-background text-white">
+      {{'General.title' | translate}}
+    </ion-title>
+  </ion-toolbar>
+
+  <div class="content-padding">
+    <br />
+    <br />
+    <ion-button class="button-style" (click)="goToHealthcareProviderLogin()">
+      {{'General.registerAsHealthcareProvider' | translate}}
+    </ion-button>
+
+    <ion-button class="button-style" (click)="goToStudentLogin()">
+      {{'General.registerAsStudent' | translate}}
+    </ion-button>
+  </div>
+</ion-content>

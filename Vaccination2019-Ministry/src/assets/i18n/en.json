@@ -1,0 +1,107 @@
+{
+	"General": {
+		"Title": "Vaccination",
+    "Logout": "Logout",
+    "Vaccines": "Vaccines batches",
+    "Vaccine": "Batch",
+    "Vaccinations": "Vaccination packages",
+    "Vaccination": "Vaccination arrangement",
+    "VACCINATION": "Vaccination",
+    "New VACCINATION": "New vaccination arrangement",
+    "Blood tests": "Blood tests",
+    "Blood test": "Blood test",
+    "BLOOD_TEST": "Blood test",
+    "New BLOOD_TEST": "New blood test",
+    "Add new": "Add new",
+    "Add": "Add",
+    "Cancel": "Cancel",
+    "Field is required": "Field is required",
+    "Price": "Vaccinate compensation",
+    "Blood test price": "Blood test compensation",
+    "Amount": "Amount",
+    "Name": "Name",
+    "Place": "Place",
+    "Date": "Date",
+    "Alternative date": "Alternative date",
+    "DUO id": "DUO id",
+    "Address": "Address",
+    "Latitude": "Latitude",
+    "Longitude": "Longitude",
+    "Next": "Next",
+    "Back": "Back",
+    "Create": "Create",
+    "Country": "Country",
+    "State": "State",
+    "City": "City",
+    "ZIP code": "ZIP code",
+    "Street address": "Street address",
+    "Street number": "House number",
+    "Healthcare provider number": "Healthcare provider number",
+    "Available": "Available",
+    "out of": "out of",
+    "Choose vaccine": "Choose vaccine batch",
+    "Healthcare provider manager number": "Vaccine service name",
+    "Password": "Password",
+    "Healthcare provider managers": "Vaccine services",
+    "Healthcare provider manager": "Vaccine service",
+    "Ministry": "Ministry",
+    "Step": "Step",
+    "Reports": "Reports",
+    "Count": "Reserved",
+    "Minimum period from previous step": "Minimum period from previous step",
+    "days": "days",
+    "Reserved": "Reserved",
+    "Total": "Total",
+    "MINISTRY":{
+      "VaccineListTitle":"Manage vaccines batches",
+      "Amount": "Reserved",
+      "Vaccinations": "Vaccination packages"
+    },
+    "HCP_MANAGER":{
+      "VaccineListTitle":"Vaccines batches",
+      "Amount": "Available",
+      "Vaccinations": "Vaccination arrangements"
+    }
+  },
+	"Login": {
+    "Login": "Login",
+    "Login as": "Login as",
+		"PasswordEmpty": "Please add password"
+	},
+  "Filter": {
+    "Filter": "Filter",
+    "Search": "Search"
+  },
+  "Vaccine": {
+    "Vaccine type": "Vaccine type",
+    "Batch code": "Batch",
+    "New vaccine": "New vaccine batch"
+  },
+  "Event": {
+    "General information": "General information",
+    "Location": "Location",
+    "Students": "Students",
+    "Healthcare providers": "Healthcare providers",
+    "BIGid in event": "This BIG id is already in event",
+    "Vaccine in event": "This vaccine batch is already in event",
+    "Healthcare provider could not be found": "Healthcare provider could not be found",
+    "Vaccine could not be found": "Vaccine batch could not be found"
+  },
+  "Vaccination": {
+    "Batch code": "Batch",
+    "Date from": "Date from",
+    "Date to": "Date to",
+    "Location": "Location",
+    "Event": "Event",
+    "Number of injections": "Batch quantity",
+    "How much injection should be reserved?": "How much injection should be reserved?"
+  },
+  "Error": {
+    "Error": "Error",
+    "Something went wrong. Please, try later": "Something went wrong. Please, try later",
+    "Unauthorized, try again sign in": "Unauthorized, try again sign in"
+  },
+  "HcpManager": {
+    "New healthcare provider manager": "New vaccine service"
+  }
+}

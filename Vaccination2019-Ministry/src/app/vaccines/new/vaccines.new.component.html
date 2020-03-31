@@ -1,0 +1,68 @@
+<h1 mat-dialog-title>{{ !!vaccine ? ('General.Vaccine' | translate) : ('Vaccine.New vaccine' | translate) }}</h1>
+<div mat-dialog-content>
+  <form novalidate autocomplete="off" [formGroup]="form">
+    <div class="input-wrapper">
+      <label for="name">{{ 'General.Name' | translate }}</label>
+      <input class="black-text" id="name" name="name" type="text" formControlName="name"
+             placeholder="{{ 'General.Name' | translate }}"/>
+      <p *ngIf="form && form.controls['name'].errors" class="validation-error">
+        {{ form.controls['name'].errors.msg }}
+      </p>
+    </div>
+
+    <div class="input-wrapper">
+      <label for="type">{{ 'Vaccine.Vaccine type' | translate }}</label>
+      <mat-select formControlName="type" id="type" name="type" placeholder="{{ 'Vaccine.Vaccine type' | translate }}">
+        <mat-option *ngFor="let type of types" value="{{ type._id }}">
+          {{ type.toString() }}
+        </mat-option>
+      </mat-select>
+      <p *ngIf="form && form.controls['type'].errors" class="validation-error">
+        {{ form.controls['type'].errors.msg }}
+      </p>
+    </div>
+
+    <div class="input-wrapper">
+      <label for="vaccineBatchCode">{{ 'Vaccine.Batch code' | translate }}</label>
+      <input class="black-text" id="vaccineBatchCode" name="batchCode" type="text" formControlName="batchCode"
+             placeholder="{{ 'Vaccine.Batch code' | translate }}"/>
+      <p *ngIf="form && form.controls['batchCode'].errors" class="validation-error">
+        {{ form.controls['batchCode'].errors.msg }}
+      </p>
+    </div>
+
+    <div class="input-wrapper">
+      <label for="initialAmount">{{ 'General.Amount' | translate }}</label>
+      <input class="black-text" id="initialAmount" name="initialAmount" type="text" formControlName="initialAmount"
+             placeholder="{{ 'General.Amount' | translate }}"
+             #amountInput/>
+      <p *ngIf="form && form.controls['initialAmount'].errors" class="validation-error">
+        {{ form.controls['initialAmount'].errors.msg }}
+      </p>
+    </div>
+
+    <div class="input-wrapper" *ngIf="!authService.isHcpManager()">
+      <label for="price">{{ 'General.Price' | translate }}</label>
+      <span class="currency-for-input">€ </span>
+      <input class="black-text price" id="price" name="price" type="text" formControlName="price"
+             placeholder="{{ 'General.Price' | translate }}"/>
+      <p *ngIf="form && form.controls['price'].errors" class="validation-error">
+        {{ form.controls['price'].errors.msg }}
+      </p>
+    </div>
+
+    <div class="input-wrapper" *ngIf="!authService.isHcpManager()">
+      <label for="bloodTestPrice">{{ 'General.Blood test price' | translate }}</label>
+      <span class="currency-for-input">€ </span>
+      <input class="black-text price" id="bloodTestPrice" name="bloodTestPrice" type="text" formControlName="bloodTestPrice"
+             placeholder="{{ 'General.Blood test price' | translate }}"/>
+      <p *ngIf="form && form.controls['bloodTestPrice'].errors" class="validation-error">
+        {{ form.controls['bloodTestPrice'].errors.msg }}
+      </p>
+    </div>
+
+  </form>
+</div>
+
+<button mat-raised-button color="primary" (click)="add()" *ngIf="!vaccine">{{ 'General.Add' | translate }}</button>
+<button mat-button (click)="cancel()">{{ 'General.Cancel' | translate }}</button>

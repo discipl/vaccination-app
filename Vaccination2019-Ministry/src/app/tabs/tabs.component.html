@@ -1,0 +1,26 @@
+<nav mat-tab-nav-bar color="primary" backgroundColor="primary">
+
+  <a mat-tab-link [routerLink]="'/vaccines'" routerLinkActive #vaccines="routerLinkActive" [active]="vaccines.isActive">{{ 'General.Vaccines' | translate }}</a>
+  <a mat-tab-link [routerLink]="'/vaccinations'" routerLinkActive #vaccinations="routerLinkActive" [active]="vaccinations.isActive">{{ 'General.'+role+'.Vaccinations' | translate }}</a>
+  <a mat-tab-link [routerLink]="'/hcpManagers'" routerLinkActive #hcpManagers="routerLinkActive" [active]="hcpManagers.isActive" *ngIf="!isHcpManager()">{{ 'General.Healthcare provider managers' | translate }}</a>
+
+  <div class="mat-tab-link custom">
+    <button mat-icon-button [matMenuTriggerFor]="menu">{{ getLanguage() }}</button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item *ngFor="let lang of ['en', 'nl']" (click)="setLanguage(lang)">
+        {{ lang }}
+        <mat-icon *ngIf="getLanguage() === lang">done</mat-icon>
+      </button>
+    </mat-menu>
+  </div>
+
+  <div class="mat-tab-link custom last">
+    <button mat-icon-button (click)="logout()" class="logout-btn">
+      {{ 'General.Logout' | translate }}
+    </button>
+  </div>
+</nav>
+
+<div class="page-content top-padding">
+  <router-outlet></router-outlet>
+</div>

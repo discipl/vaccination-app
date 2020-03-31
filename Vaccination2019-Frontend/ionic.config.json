@@ -1,0 +1,7 @@
+{
+  "name": "Vaccination2019-Frontend",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

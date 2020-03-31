@@ -1,0 +1,38 @@
+<div class="flex">
+  <div class="filter">
+    <div class="content">
+      <form novalidate autocomplete="off" [formGroup]="filter">
+        <h1>{{ 'Filter.Filter' | translate }}</h1>
+
+        <div class="input-wrapper" *ngIf="isVaccinations()">
+          <label for="vaccine">{{ 'Vaccination.Batch code' | translate }}</label>
+          <input [matAutocomplete]="auto" class="black-text" id="vaccine" name="vaccine" type="search"
+                 formControlName="vaccine"
+                 placeholder="{{ 'Vaccination.Batch code' | translate }}"/>
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayVaccine">
+            <mat-option *ngFor="let vaccine of vaccines | async" [value]="vaccine">
+              {{ vaccine.batchCode }}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+
+        <div class="input-wrapper">
+          <label for="placeName">{{ 'General.Place' | translate }}</label>
+          <input class="black-text" id="placeName" name="placeName" type="search" formControlName="placeName"
+                 placeholder="{{ 'General.Place' | translate }}"/>
+        </div>
+
+        <button mat-raised-button (click)="search()" color="primary">
+          {{ 'Filter.Search' | translate}}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="search-result">
+    <div class="content">
+      <app-vaccinations *ngIf="isVaccinations()" [dataSource]="dataSource" (search)="search()"></app-vaccinations>
+      <mat-paginator hidePageSize pageSize="{{PAGE_SIZE}}" (page)="search($event)"></mat-paginator>
+    </div>
+  </div>
+</div>

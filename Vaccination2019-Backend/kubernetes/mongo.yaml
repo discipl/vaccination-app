@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mongo
+  namespace: test
+data:
+  MONGO_INITDB_ROOT_USERNAME: c3VwZXJVc2Vy
+  MONGO_INITDB_ROOT_PASSWORD: dGhpc19pc19ub3RfeW91cl9wYXNzd29yZA==
+type: Opaque
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-test
+  labels:
+    mongo: test
+spec:
+  capacity:
+    storage: 100Gi
+  storageClassName: default
+  azureDisk:
+    kind: Managed
+    diskName: mongo-test
+    diskURI: /subscriptions/c2cb3940-082c-48c3-ba45-06302a879e0f/resourceGroups/vaccination-backend-rg/providers/Microsoft.Compute/disks/mongo-test
+    fsType: ext4
+    cachingMode: ReadOnly
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    kind: PersistentVolumeClaim
+    name: mongo
+    namespace: test
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mongo
+  namespace: test
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: default
+  resources:
+    requests:
+      storage: 100Gi
+  selector:
+    matchLabels:
+      mongo: test
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mongo
+  namespace: test
+  labels:
+    project: "vaccination"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        project: "vaccination"
+        app: mongo
+    spec:
+      containers:
+        - image: mongo:4
+          name:  mongo
+          volumeMounts:
+            - name:  data
+              mountPath:  /data/db
+          imagePullPolicy: IfNotPresent
+          args:
+            - --auth
+          envFrom:
+            - secretRef:
+                name: mongo
+          ports:
+            - name: mongo
+              containerPort: 27017
+          securityContext:
+            privileged: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: test
+spec:
+  ports:
+    - name: mongo
+      port: 27117
+      targetPort: 27017
+  type: LoadBalancer
+  selector:
+    app: mongo

@@ -1,0 +1,48 @@
+<div class="mat-background-primary">
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <span>{{ 'General.Title' | translate }}</span>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</div>
+
+<div class="page-content">
+
+  <form novalidate autocomplete="off" [formGroup]="loginForm">
+    <div class="login-toggle">
+      <h1>{{'Login.Login as' | translate}}</h1>
+
+      <div class="buttons">
+        <button mat-raised-button [color]="role === 'MINISTRY' ? 'primary' : 'medium'" (click)="setRole('MINISTRY')">
+          {{ 'General.Ministry' | translate }}
+        </button>
+        <button mat-raised-button [color]="role === 'HCP_MANAGER' ? 'primary' : 'medium'" (click)="setRole('HCP_MANAGER')">
+          {{ 'General.Healthcare provider manager' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="input-wrapper" *ngIf="role === 'HCP_MANAGER'">
+      <input class="black-text" id="HCPManagerNumber" name="HCPManagerNumber" type="text" formControlName="HCPManagerNumber"
+             placeholder="{{ 'General.Healthcare provider manager number' | translate }}"/>
+      <p *ngIf="loginForm && loginForm.controls['HCPManagerNumber'].errors" class="validation-error">
+        {{ loginForm.controls['HCPManagerNumber'].errors.msg }}
+      </p>
+    </div>
+
+    <div class="input-wrapper">
+      <input class="black-text" id="password" name="password" type="password" formControlName="password"
+             placeholder="{{ 'General.Password' | translate }}"/>
+      <p *ngIf="loginForm && loginForm.controls['password'].errors" class="validation-error">
+        {{ loginForm.controls['password'].errors.msg }}
+      </p>
+    </div>
+
+    <div class="content-padding">
+      <button mat-raised-button color="primary" class="button-style" (click)="login()"
+              [disabled]="!loginForm.get('password').value">
+        {{'Login.Login' | translate}}
+      </button>
+    </div>
+  </form>
+</div>

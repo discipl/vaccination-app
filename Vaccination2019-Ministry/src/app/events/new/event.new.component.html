@@ -1,0 +1,190 @@
+<h1 mat-dialog-title>{{ ('General.New ' + eventType) | translate }}</h1>
+<div mat-dialog-content>
+  <mat-horizontal-stepper [linear]="false" #stepper [@.disabled]="true">
+    <mat-step *ngIf="isVaccination()">
+      <form [formGroup]="vaccinesForm">
+        <ng-template matStepLabel>{{ 'General.Vaccines' | translate }}</ng-template>
+
+        <div class="input-wrapper">
+          <label for="initialCount">{{ 'Vaccination.Number of injections' | translate }}</label>
+          <input class="black-text" id="initialCount" name="initialCount" type="number" formControlName="initialCount"
+                 placeholder="{{ 'Vaccination.Number of injections' | translate }}"/>
+          <p *ngIf="vaccinesForm && vaccinesForm.get('initialCount').errors" class="validation-error">
+            {{ vaccinesForm.get('initialCount').errors.msg }}
+          </p>
+          <div class="hint">{{ 'Vaccination.How much injection should be reserved?' | translate }}</div>
+        </div>
+
+        <label for="vaccines">{{ 'Vaccination.Batch code' | translate }}</label>
+        <div class="input-wrapper" *ngIf="isVaccination()">
+          <div class="select-vaccine">
+
+            <input [matAutocomplete]="auto" class="black-text" id="vaccines" name="vaccines" type="text"
+                   formControlName="vaccines"
+                   placeholder="{{ 'Vaccination.Batch code' | translate }}"/>
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayVaccine">
+              <mat-option *ngFor="let vaccine of autocompletedVaccines | async" [value]="vaccine">
+                {{ vaccine.batchCode }}
+              </mat-option>
+            </mat-autocomplete>
+
+            <button mat-raised-button color="primary" (click)="addVaccine()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <p *ngIf="vaccinesForm && vaccinesForm.get('vaccines').errors" class="validation-error">
+            {{ vaccinesForm.get('vaccines').errors.msg }}
+          </p>
+        </div>
+
+        <div class="vaccines">
+          <div *ngFor="let vaccine of vaccines;" class="vaccine">
+            <div class="batch-code">{{ vaccine.batchCode }}</div>
+            <button mat-button color="primary" (click)="removeVaccine(vaccine.batchCode)" *ngIf="!vaccinationEvent">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="buttons">
+        <button mat-raised-button color="primary" matStepperNext>{{ 'General.Next' | translate }}</button>
+        <button mat-button matDialogClose>{{ 'General.Cancel' | translate }}</button>
+      </div>
+    </mat-step>
+
+    <mat-step *ngFor="let step of steps; let i = index">
+      <form [formGroup]="step.form">
+        <ng-template matStepLabel *ngIf="isVaccination()">{{ 'General.Step' | translate }} {{ i + 1 }}</ng-template>
+        <ng-template matStepLabel *ngIf="!isVaccination()">{{ 'General.Blood test' | translate }}</ng-template>
+
+        <div class="input-wrapper">
+          <label for="date">{{ 'General.Date' | translate }}</label>
+          <input [matDatepicker]="datePicker" class="black-text date" id="date" name="date" type="text"
+                 formControlName="date"
+                 placeholder="dd-mm-yyyy"
+                 #dateInput/>
+          <mat-datepicker-toggle [for]="datePicker"></mat-datepicker-toggle>
+          <mat-datepicker #datePicker></mat-datepicker>
+          <p *ngIf="step.form && step.form.controls['date'].errors" class="validation-error">
+            {{ step.form.controls['date'].errors.msg }}
+          </p>
+          <div class="hint" *ngIf="step.intervalFromPrevious">{{ 'Minimum period from previous step' | translate  }} {{ step.intervalFromPrevious }} {{ 'days' | translate }}</div>
+        </div>
+
+        <div class="input-wrapper">
+          <label for="alternativeDate">{{ 'General.Alternative date' | translate }}</label>
+          <input [matDatepicker]="alternativeDatePicker" class="black-text date" id="alternativeDate" name="alternativeDate"
+                 type="text"
+                 formControlName="alternativeDate"
+                 placeholder="dd-mm-yyyy"
+                 #alternativeDate/>
+          <mat-datepicker-toggle [for]="alternativeDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #alternativeDatePicker></mat-datepicker>
+          <p *ngIf="step.form && step.form.controls['alternativeDate'].errors" class="validation-error">
+            {{ step.form.controls['alternativeDate'].errors.msg }}
+          </p>
+          <div class="hint" *ngIf="step.intervalFromPrevious">{{ 'Minimum period from previous step' | translate  }} {{ step.intervalFromPrevious }} {{ 'days' | translate }}</div>
+        </div>
+
+
+        <div formGroupName="place">
+
+          <h3>{{ 'General.Place' | translate }}</h3>
+
+          <div class="input-wrapper">
+            <label for="place.name">{{ 'General.Name' | translate }}</label>
+            <input class="black-text" id="place.name" name="name" type="text" formControlName="name"
+                   placeholder="{{ 'General.Name' | translate }}"
+                   autocomplete="randomValue"
+                  (change)="placeNameChanged($event, i)"/>
+            <p *ngIf="step.form && step.form.get('place').get('name').errors" class="validation-error">
+              {{ step.form.get('place').get('name').errors.msg }}
+            </p>
+          </div>
+
+          <div class="input-wrapper">
+            <label for="place.address">{{ 'General.Address' | translate }}</label>
+            <input class="black-text" id="place.address" name="address" type="text" formControlName="address"
+                   placeholder="{{ 'General.Address' | translate }}"
+                   ngx-google-places-autocomplete #placesRef="ngx-places"
+                   (onAddressChange)="handleAddressChange($event, i)"/>
+            <p *ngIf="step.form && step.form.get('place').get('address').errors" class="validation-error">
+              {{ step.form.get('place').get('address').errors.msg }}
+            </p>
+          </div>
+
+          <div formGroupName="addressDetails">
+            <div class="input-wrapper el-2 el-2-1"
+                 *ngIf="step.form.get('place').get('addressDetails').get('country').value">
+              <label for="addressDetails.country">{{ 'General.Country' | translate }}</label>
+              <input class="black-text" id="addressDetails.country" type="text" formControlName="country"/>
+            </div>
+
+            <div class="input-wrapper el-2 el-2-2"
+                 *ngIf="step.form.get('place').get('addressDetails').get('state').value">
+              <label for="addressDetails.state">{{ 'General.State' | translate }}</label>
+              <input class="black-text" id="addressDetails.state" type="text" formControlName="state"/>
+            </div>
+
+            <div class="input-wrapper el-2 el-2-1"
+                 *ngIf="step.form.get('place').get('addressDetails').get('city').value">
+              <label for="addressDetails.city">{{ 'General.City' | translate }}</label>
+              <input class="black-text" id="addressDetails.city" type="text" formControlName="city"/>
+            </div>
+
+            <div class="input-wrapper el-2 el-2-2"
+                 *ngIf="step.form.get('place').get('addressDetails').get('zipCode').value">
+              <label for="addressDetails.zipCode">{{ 'General.ZIP code' | translate }}</label>
+              <input class="black-text" id="addressDetails.zipCode" type="text" formControlName="zipCode"/>
+            </div>
+
+            <div class="input-wrapper el-2 el-2-1"
+                 *ngIf="step.form.get('place').get('addressDetails').get('streetAddress').value">
+              <label for="addressDetails.streetAddress">{{ 'General.Street address' | translate }}</label>
+              <input class="black-text" id="addressDetails.streetAddress" type="text" formControlName="streetAddress"/>
+            </div>
+
+            <div class="input-wrapper el-2 el-2-2"
+                 *ngIf="step.form.get('place').get('addressDetails').get('streetNumber').value">
+              <label for="addressDetails.streetNumber">{{ 'General.Street number' | translate }}</label>
+              <input class="black-text" id="addressDetails.streetNumber" type="text" formControlName="streetNumber"/>
+            </div>
+          </div>
+
+        </div>
+
+        <h3>{{ 'Event.Healthcare providers' | translate }}</h3>
+
+        <div class="input-wrapper" >
+          <label for="bigIds">{{ 'General.Healthcare provider number' | translate }}</label>
+          <div class="add-hc-provider">
+            <input class="black-text" id="bigIds" name="bigIds" type="text" formControlName="bigIds"
+                   placeholder="{{ 'General.Healthcare provider number' | translate }}"/>
+            <button mat-raised-button color="primary" (click)="addHCProvider(step)">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <p *ngIf="step.form && step.form.controls['bigIds'].errors" class="validation-error">
+            {{ step.form.controls['bigIds'].errors.msg }}
+          </p>
+        </div>
+
+        <div *ngFor="let hcProvider of step.hcProviders;" class="hc-provider">
+          <div class="bigId">{{ hcProvider.bigId }}</div>
+          <div class="name">{{ hcProvider.firstName }} {{ hcProvider.lastName}}</div>
+          <button mat-button color="primary" (click)="removeHCProvider(step, hcProvider.bigId)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+
+        <div class="buttons">
+          <button mat-raised-button matStepperNext color="primary" *ngIf="i< (steps.length - 1)">{{ 'General.Next' | translate }}</button>
+          <button mat-raised-button color="primary" (click)="add()" *ngIf="i === (steps.length - 1)">{{ 'General.Create' | translate }}</button>
+          <button mat-button matStepperPrevious *ngIf="isVaccination()">{{ 'General.Back' | translate }}</button>
+          <button mat-button matDialogClose *ngIf="!isVaccination()">{{ 'General.Cancel' | translate }}</button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>

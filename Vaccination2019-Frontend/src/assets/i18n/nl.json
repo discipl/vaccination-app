@@ -1,0 +1,140 @@
+{
+	"General": {
+		"title": "Vaccinatie",
+		"login": "Inloggen als:",
+		"registerAsHealthcareProvider": "Vaccinatie",
+		"registerAsStudent": "Studenten",
+		"healthcareProvider": "Zorgaanbieder registratie",
+		"student": "Studenten registratie",
+		"tabAppointment": "Afspraken",
+		"tabSettings": "Instellingen",
+		"tabLogout": "Uitloggen",
+    "Events": "Evenementen",
+		"noConnection": "U hebt geen netwerkverbinding. Probeer het later nogmaals.",
+		"error": "Sorry, er ging iets mis. Probeer het later nogmaals",
+    "yes": "Ja",
+    "no": "No",
+    "vacc": "Vaccins",
+    "Unknown": "Onbekend",
+    "Students": "Student"
+	},
+	"Login": {
+		"loginBtn": "Inloggen",
+		"creteAccount": "Account aanmaken",
+		"bigNumber": "BIG nummer",
+		"duoNumber": "DUO nummer",
+		"password": "Wachtwoord",
+		"bigIdEmpty": "Voeg BIG nummer toe",
+		"bigNumberInvalid": "Voer een geldig BIG nummer in",
+		"duoIdEmpty": "Voeg DUO nummer toe",
+		"duoIdInvalid": "Voer een geldig DUO nummer in",
+		"numberPattern": "Alleen toegestane nummers",
+		"passwordEmpty": "Voeg wachtwoord toe",
+		"passwordError": "Wachtwoord moet ten minste 6 tekens lang zijn",
+		"passwordInvalid": "Wachtwoord voer geldig wachtwoord in",
+		"createAccountBtn": "Aanmelden",
+		"existingAccountText": "Ik heb al een account?",
+		"error": "Onjuiste referenties"
+	},
+	"Profile": {
+		"title": "Profiel",
+		"fName": "Voornaam",
+		"lName": "Achternaam",
+		"dob": "Geboortedatum",
+		"address": "Adres",
+		"zipCode": "Postcode",
+		"country": "Land",
+		"number": "Aantal",
+		"study": "Studie",
+		"crebo": "CREBO",
+		"school": "School",
+		"goTab": "Ga naar tabbladen"
+	},
+  "Settings": {
+    "profile": "Gebruikers informatie",
+    "privacy": "Privacy instellingen",
+    "title": "Instellingen"
+  },
+  "Privacy": {
+    "shareWith": "Deel informatie met",
+    "title": "Privacy instellingen",
+    "DUO": "DUO",
+    "GGD": "GGD/Kliniek",
+    "internship": "Internship",
+    "MEVA": "MEVA",
+    "personalInfo":"Persoonlijke gegevens",
+    "medicalInfo":"Medische gegevens",
+    "financeInfo":"Financiele gegevens"
+  },
+	"Appointments": {
+		"title": "Mijn afspraken",
+		"statusTitle": "Status",
+		"days": [
+			"Zo",
+			"Ma",
+			"Di",
+			"Wo",
+			"Do",
+			"Vr",
+			"Za"
+		],
+		"months": [
+			"Januari",
+			"februari",
+			"maart",
+			"april",
+			"mei",
+			"juni",
+			"juli",
+			"augustus",
+			"september",
+			"oktober",
+			"november",
+			"december"
+		],
+		"vaccinationTitle": "Vaccinatie",
+		"status": {
+			"NEW": "Nieuwe",
+			"REGISTERED": "Geregistreerd",
+			"CONFIRMED_BY_STUDENT": "Bevestigd door student",
+			"CONFIRMED_BY_HEALTHCARE_PROVIDER": "Bevestigd door zorgaanbieder",
+			"CONFIRMED": "Bevestigd",
+			"FINISHED_BY_STUDENT": "Afgewerkt door student",
+			"FINISHED_BY_HEALTHCARE_PROVIDER": "Afgewerkt door zorgaanbieder",
+			"FINISHED": "Afgewerkt"
+		},
+		"checkBtn": "Controle",
+		"registerBtn": "Registreren",
+		"shareBtn": "Deel mijn info",
+		"doneBtn": "Gedaan",
+		"appointment": "Afspraak",
+		"confirmCancelTitle": "Wil je een afspraak annuleren?",
+		"cancelSuccess": "Je afspraak is geannuleerd",
+		"cancelError": "Sorry, er ging iets mis. Probeer het later nogmaals",
+		"confirmSuccess": "Uw afspraak is bevestigd",
+		"shareQrByHEALTHCARE_PROVIDER": "Deel deze QR-code met de student",
+		"shareQrBySTUDENT": "Deel deze QR-code met de zorgaanbieder",
+		"incorrectAppointmentId": "Onjuiste aanstellingsidentificatie",
+		"noAppointments": "Je hebt nog geen afspraken",
+		"showFinished": "Toon afgewerkt evenementen",
+		"date": "Datum",
+		"student": "Student",
+		"healthcareProvider": "Zorgaanbieder",
+    "Vaccine batch code": "Partijnummer",
+    "Scan vaccine": "Scan vaccin",
+    "Vaccine isn't at the appointment": "Het vaccin is niet op de afspraak"
+	},
+  "Events": {
+    "event": "Evenement",
+    "No events": "Geen evenementen"
+  },
+	"errors": {
+		"401": "Je sessie was verlopen",
+		"500": "Er is iets fout gegaan. Probeer het later opnieuw.",
+		"502": "Er is iets fout gegaan. Probeer het later opnieuw."
+	},
+	"eventType": {
+		"VACCINATION": "Vaccinatie",
+		"BLOOD_TEST": "Bloed Test"
+	}
+}

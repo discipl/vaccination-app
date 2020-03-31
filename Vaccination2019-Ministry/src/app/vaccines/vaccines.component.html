@@ -1,0 +1,72 @@
+<div class="flex">
+  <div class="filter">
+    <div class="content">
+      <form novalidate autocomplete="off" [formGroup]="filter">
+        <h1>{{ 'Filter.Filter' | translate }}</h1>
+
+        <div class="input-wrapper">
+          <label for="vaccineType">{{ 'Vaccine.Vaccine type' | translate }}</label>
+          <mat-select formControlName="vaccineType" id="vaccineType" name="vaccineType" placeholder="{{ 'Vaccine.Vaccine type' | translate }}">
+            <mat-option *ngFor="let type of types" value="{{ type._id }}">
+              {{ type.producer }}, {{ type.drug }}, {{ type.dosage }}
+            </mat-option>
+          </mat-select>
+        </div>
+
+        <div class="input-wrapper">
+          <label for="batchCode">{{ 'Vaccine.Batch code' | translate }}</label>
+          <input class="black-text" id="batchCode" name="batchCode" type="search" formControlName="batchCode"
+                 placeholder="{{ 'Vaccine.Batch code' | translate }}"/>
+        </div>
+
+        <button mat-raised-button (click)="search()" color="primary">
+          {{ 'Filter.Search' | translate}}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="search-result">
+    <div class="content">
+      <div class="header">
+        <h1>{{('General.'+ role +'.VaccineListTitle') | translate }}</h1>
+        <button mat-raised-button color="primary" (click)="openDialog()" *ngIf="!authService.isHcpManager()">
+          <mat-icon>add</mat-icon>
+          {{ 'General.Add new' | translate }}
+        </button>
+      </div>
+
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>{{ 'General.Name' | translate }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>{{ 'Vaccine.Vaccine type' | translate }}</th>
+          <td mat-cell *matCellDef="let element">{{ typeById(element.type).toString() }}</td>
+        </ng-container>
+        <ng-container matColumnDef="batchCode">
+          <th mat-header-cell *matHeaderCellDef>{{ 'Vaccine.Batch code' | translate }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.batchCode }}</td>
+        </ng-container>
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>{{ 'General.'+role+'.Amount' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="amount">{{ element.availableAmount }}<span *ngIf="element.initialAmount">/</span>{{ element.initialAmount }}</td>
+        </ng-container>
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>{{ 'General.Price' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="price"><span *ngIf="element.price">€ </span>{{ element.price }}</td>
+        </ng-container>
+        <ng-container matColumnDef="bloodTestPrice">
+          <th mat-header-cell *matHeaderCellDef>{{ 'General.Blood test price' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="price"><span *ngIf="element.bloodTestPrice">€ </span>{{ element.bloodTestPrice }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openVaccine(row)"></tr>
+      </table>
+
+      <mat-paginator hidePageSize pageSize="{{PAGE_SIZE}}" (page)="search($event)"></mat-paginator>
+    </div>
+  </div>
+</div>

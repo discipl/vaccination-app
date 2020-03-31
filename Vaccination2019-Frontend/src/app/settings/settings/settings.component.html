@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="toolbar-background text-white other-title-font-size">
+      {{'Settings.title' | translate}}
+    </ion-title>
+    <ion-buttons slot="end" class="right">
+      <ion-button (click)="openLanguagePopover($event)">
+        <ion-icon slot="icon-only" class="more" name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="user-settings">
+    <ion-list class="settings-list">
+      <ion-item (click)="showProfile()">
+        <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        {{'Settings.profile' | translate}}
+      </ion-item>
+      <ion-item (click)="showPrivacy()">
+        <ion-icon slot="end" name="arrow-forward"></ion-icon>
+        {{'Settings.privacy' | translate}}
+      </ion-item>
+    </ion-list>
+</ion-content>

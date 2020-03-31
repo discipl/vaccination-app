@@ -1,0 +1,339 @@
+pipeline {
+    agent any
+    options {
+        timeout(time: 20, unit: 'MINUTES')
+        timestamps()
+    }
+    environmentExample {
+        REGISTRY = "lldockerreg.azurecr.io"
+        REGISTRY_NAME = "LLdockerreg"
+        IMAGE_NAME = "vaccination-backend"
+        PREBUILD_IMAGE_NAME = "vaccination-prebuild"
+        WEBAPP_NAME = "vaccination"
+        GROUP = "vaccination-backend-rg"
+        IP = "52.236.134.182"
+        ZONE = "vaccination.api.ledgerleopard.com"
+        CLUSTER_NAME = "c-w6b8f"
+        DEPLOYMENT_DIR = "kubernetes"
+        DEPLOYMENT = "kubernetes.yaml"
+        MONGO_BACKUP = "mongo-backup.yaml"
+        ENV_DIR = "src"
+        ENV_FILE = ".env"
+        ENV_NAME = "master-env"
+    }
+    stages {
+        stage('Build environments') {
+            parallel {
+                stage('Testing') {
+                    when {
+                        expression { BRANCH_NAME ==~ /PR-\d+/ }
+                    }
+                    steps {
+                        script {
+                            env.TAG = "pm-test-" + BUILD_NUMBER
+                            env.TEST = "true"
+                            env.CMD = "'node', './app.js'"
+                        }
+                    }
+                }
+                stage('Test') {
+                   when {
+                       expression { BRANCH_NAME ==~ /(test)/ }
+                   }
+                   steps {
+                       script {
+                           env.TAG = "test-" + BUILD_NUMBER
+                           env.DNS = "test."
+                           env.CMD = "'node', './app.js'"
+                       }
+                   }
+                }
+                stage('Develop') {
+                    when {
+                        expression { BRANCH_NAME ==~ /(develop)/ }
+                    }
+                    steps {
+                        script {
+                            env.TAG = "dev-" + BUILD_NUMBER
+                            env.DNS = "develop."
+                            env.CMD = "'node', '--inspect', 'app.js'"
+                        }
+                    }
+                }
+                stage('Production') {
+                    when {
+                        expression { BRANCH_NAME ==~ /(master)/ }
+                    }
+                    steps {
+                        script {
+                            env.TAG = "prod-" + BUILD_NUMBER
+                            env.DNS = ""
+                            env.CMD = "'node', './app.js'"
+                        }
+                    }
+                }
+                stage('Other') {
+                    when {
+                        not {
+                            expression { BRANCH_NAME ==~ /(test|develop|master|PR-\d+)/ }
+                        }
+                    }
+                    steps {
+                        script {
+                            env.TAG = "none"
+                        }
+                    }
+                }
+            }
+        }
+        stage('Preparing') {
+            steps {
+                cleanWs()
+                checkout scm
+                script {
+                    env.SHORT = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
+                    env.BRANCH = sh(returnStdout: true, script: "echo ${GIT_BRANCH} | sed \"s|origin/||\"").trim()
+                    if ( BRANCH ==~ /(master)/ ) {
+                       env.BRANCH = "prod"
+                    }
+                    env.WEBAPP_NAME_POSTFIX = sh(returnStdout: true, script: '''tr -cd "[:alnum:]" < /dev/urandom | tr -cd "[:lower:]" | fold -w10 | head -n1''').trim()
+                }
+                withCredentials([azureServicePrincipal('AzureServicePrincipalLL')]) {
+                    script {
+                        sh "az login --service-principal -u ${AZURE_CLIENT_ID} --password ${AZURE_CLIENT_SECRET} --tenant ${AZURE_TENANT_ID}"
+                    }
+                }
+                withCredentials([usernamePassword(credentialsId: 'azure-docker-registry', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    script {
+                        sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} ${REGISTRY}"
+                    }
+                }
+            }
+        }
+        stage('Prepare .env file') {
+            parallel {
+                stage('DEV-ENV') {
+                    when {
+                        expression { BRANCH_NAME ==~ /(develop)/ }
+                    }
+                    steps {
+                        dir("${WORKSPACE}/${ENV_DIR}") {
+                            configFileProvider([configFile(fileId: "${ENV_NAME}", targetLocation: "${ENV_FILE}")]) {
+                                script {
+                                    sh '''
+                                        sed -i \"s/\\[db_host\\]/mongo.develop/g\" ${ENV_FILE}
+                                        sed -i \"s/\\[database\\]/vaccination/g\" ${ENV_FILE}
+                                    '''
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('TEST-ENV') {
+                    when {
+                        expression { BRANCH_NAME ==~ /(test)/ }
+                    }
+                    steps {
+                        dir("${WORKSPACE}/${ENV_DIR}") {
+                            configFileProvider([configFile(fileId: "${ENV_NAME}", targetLocation: "${ENV_FILE}")]) {
+                                script {
+                                    sh '''
+                                        sed -i \"s/\\[db_host\\]/mongo.test/g\" ${ENV_FILE}
+                                        sed -i \"s/\\[database\\]/vaccination/g\" ${ENV_FILE}
+                                    '''
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('PROD-ENV') {
+                    when {
+                        expression { BRANCH_NAME ==~ /(master)/ }
+                    }
+                    steps {
+                        dir("${WORKSPACE}/${ENV_DIR}") {
+                            configFileProvider([configFile(fileId: "${ENV_NAME}", targetLocation: "${ENV_FILE}")]) {
+                                script {
+                                    sh '''
+                                        sed -i \"s/\\[db_host\\]/mongo.prod/g\" ${ENV_FILE}
+                                        sed -i \"s/\\[database\\]/vaccination/g\" ${ENV_FILE}
+                                    '''
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('Tests') {
+                    when {
+                        expression { BRANCH_NAME ==~ /(PR-\d+)/ }
+                    }
+                    steps {
+                        dir("${WORKSPACE}/${ENV_DIR}") {
+                            configFileProvider([configFile(fileId: "${ENV_NAME}", targetLocation: "${ENV_FILE}")]) {
+                                script {
+                                    sh '''
+                                        sed -i \"s/\\[db_host\\]/52.236.128.180/g\" ${ENV_FILE}
+                                        sed -i \"s/\\[database\\]/\${BRANCH}/g\" ${ENV_FILE}
+                                    '''
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        stage('Check prebuild image') {
+            when {
+                expression { BRANCH_NAME ==~ /(master|develop|test|PR-\d+)/ }
+            }
+            steps {
+                script {
+                    env.PACKAGE_HASH = sh (returnStdout: true, script: "git log -n 1 --pretty=format:%h package.json").trim()
+                    env.IMAGE_CHECK = sh (returnStdout: true, script: "az acr repository show-tags -n ${REGISTRY_NAME} --repository ${PREBUILD_IMAGE_NAME} | grep --quiet ${PACKAGE_HASH} && echo true || echo false").trim()
+                    if (env.IMAGE_CHECK == "false") {
+                        env.BUILD_PREBUILD = 'true'
+                    } else {
+                        env.BUILD_PREBUILD = 'false'
+                    }
+                    sh "printenv"
+                }
+            }
+        }
+        stage('Build prebuild image') {
+            when {
+                allOf {
+                    expression { BRANCH_NAME ==~ /(master|develop|test|PR-\d+)/ }
+                    expression { BUILD_PREBUILD == "true" }
+                }
+            }
+            steps {
+                script {
+                    sh "docker build -t ${REGISTRY}/${PREBUILD_IMAGE_NAME}:${PACKAGE_HASH} --no-cache -f prebuild.Dockerfile ."
+                }
+            }
+        }
+        stage('Push prebuild image') {
+            when {
+                allOf {
+                    expression { BRANCH_NAME ==~ /(master|develop|test|PR-\d+)/ }
+                    expression { BUILD_PREBUILD ==~ /(true)/ }
+                }
+            }
+            steps {
+                script {
+                    sh "docker push ${REGISTRY}/${PREBUILD_IMAGE_NAME}:${PACKAGE_HASH}"
+                }
+            }
+        }
+        stage('Build image') {
+            when {
+                expression { BRANCH_NAME ==~ /(test|develop|master|PR-\d+)/ }
+            }
+            steps {
+                wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+                    script {
+                        sh '''
+                            docker build -t ${REGISTRY}/${IMAGE_NAME}:${TAG} \
+                            --build-arg short=${SHORT} \
+                            --build-arg branch=${BRANCH} \
+                            --build-arg tag=${BRANCH} \
+                            --build-arg prebuildImageHash=${PACKAGE_HASH} \
+                            --build-arg test=${TEST} \
+                            --no-cache .
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Upload image') {
+            when {
+                expression { BRANCH_NAME ==~ /(test|develop|master|PR-\d+)/ }
+            }
+            steps {
+                script {
+                    sh "docker push ${REGISTRY}/${IMAGE_NAME}:${TAG}"
+                }
+            }
+        }
+        stage('Prepare deploy files') {
+            when {
+                expression { BRANCH_NAME ==~ /(test|develop|master)/ }
+            }
+            steps {
+                dir("${WORKSPACE}/${DEPLOYMENT_DIR}") {
+                    script {
+                        sh '''
+                            sed -i \"s/\\[branch\\]/\${BRANCH}/g\" *yaml
+                            sed -i \"s/\\[branch-with-number\\]/\${TAG}/g\" *yaml
+                            sed -i \"s/\\[dns\\]/\${DNS}/g\" *yaml
+                            sed -i \"s/#//g\" ${DEPLOYMENT}
+                            sed -i s#cmd#\"\${CMD}\"# ${DEPLOYMENT}
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            when {
+                expression { BRANCH_NAME ==~ /(test|develop|master)/ }
+            }
+            steps {
+                dir("${WORKSPACE}/${DEPLOYMENT_DIR}") {
+                    script {
+                        sh '''
+                            az aks get-credentials --resource-group ${GROUP} --name ${CLUSTER_NAME} -f config
+                            kubectl --kubeconfig ./config apply -f ${DEPLOYMENT}
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Deploy mongo-backup job') {
+            when {
+                expression { BRANCH_NAME ==~ /(master)/ }
+            }
+            steps {
+                dir("${WORKSPACE}/${DEPLOYMENT_DIR}") {
+                    script {
+                        sh '''
+                            kubectl --kubeconfig ./config apply -f ${MONGO_BACKUP}
+                        '''
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                sh '''
+                    PACKAGE_HASH=${PACKAGE_HASH:-"0"}
+                    docker image rm ${REGISTRY}/${IMAGE_NAME}:${TAG} ${REGISTRY}/${PREBUILD_IMAGE_NAME}:${PACKAGE_HASH} || exit 0
+                '''
+            }
+        }
+        success {
+            emailext (
+                subject: "SUCCESS: Job '${env.JOB_NAME}-${env.TAG}'",
+                attachLog: true,
+                body: """
+                    <p>SUCCESS: Job '${env.JOB_NAME}-${env.TAG}'</p>
+                    <p>Version: branch - ${env.BRANCH}, hash - ${SHORT}</p>
+                """,
+                to: "anna.goreva@ledgerleopard.com, oleg.porodnikov@ledgerleopard.com"
+            )
+        }
+        failure {
+            emailext (
+                subject: "FAILED: Job '${env.JOB_NAME}-${env.TAG}'",
+                attachLog: true,
+                body: """
+                    <p>FAILED: Job '${env.JOB_NAME}-${env.TAG}':</p>
+                    <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME}-${env.TAG}</a>&QUOT;</p>
+                    <p>Version: branch - ${env.BRANCH}, hash - ${SHORT}</p>
+                """,
+                to: "anna.goreva@ledgerleopard.com, oleg.porodnikov@ledgerleopard.com"
+            )
+        }
+    }
+}

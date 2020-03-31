@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="toolbar-background text-white other-title-font-size">
+      {{'General.Events' | translate}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="general-content content-padding-top" [scrollEvents]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" [pullMin]="60" [pullMax]="60">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ng-container *ngIf="!events || !events.length">
+    <p class="ion-text-center">{{'Events.No events' | translate}}</p>
+  </ng-container>
+
+  <ng-container *ngIf="events && events.length > 0">
+    <ion-card class="item-card" *ngFor="let event of events" (click)="showDetails(event)">
+      <ion-grid>
+        <ion-row class="item">
+          <ion-col size="10">
+            <h3 *ngIf="event.type">{{'eventType.' + event.type | translate}}</h3>
+
+            <div class="event-vaccines" *ngIf="event.vaccines && event.vaccines.length">
+              <span *ngFor="let vaccine of event.vaccines; let i = index">{{ vaccine.batchCode }}{{(i !== event.vaccines.length - 1) ? ', ' : '' }}</span>
+            </div>
+
+            <div class="date-row date-format" *ngIf="!!event.chosenDate">
+              <img alt="icon" src="../../assets/icon/date.svg">
+              {{ event.chosenDate | date:'E d MMM y':undefined:getLocale()}}
+            </div>
+
+            <div class="date-row date-format" *ngIf="!event.chosenDate">
+              <img alt="icon" src="../../assets/icon/date.svg">
+              <ng-container *ngFor="let date of event.allowedDates; let i = index">
+                <span *ngIf="i > 0" class="date-delimiter">/</span>
+                {{ date | date:'E d MMM y':undefined:getLocale()}}
+              </ng-container>
+            </div>
+
+            <div class="locate-row">
+              <img alt="icon" src="../../assets/icon/pin.svg">
+              {{event.place.address}}
+            </div>
+          </ion-col>
+
+          <ion-col size="2" class="arrow-col">
+            <img alt="icon" src="../../assets/icon/arrow.svg">
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </ng-container>
+
+</ion-content>

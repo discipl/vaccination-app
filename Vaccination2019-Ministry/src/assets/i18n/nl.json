@@ -1,0 +1,108 @@
+{
+  "General": {
+    "Title": "Vaccinatie",
+    "Logout": "Uitloggen",
+    "Vaccines": "Vaccins partijen",
+    "Vaccine": "Partij",
+    "Vaccinations": "Vaccinatie pakketten",
+    "Vaccination": "Vaccinatie regeling",
+    "VACCINATION": "Vaccinatie",
+    "New VACCINATION": "Nieuw Vaccinatie pakket",
+    "Blood tests": "Bloedonderzoek",
+    "Blood test": "Bloedonderzoek",
+    "BLOOD_TEST": "Bloedonderzoek",
+    "New BLOOD_TEST": "Nieuw bloedonderzoek",
+    "Add new": "Nieuw toevoegen",
+    "Add": "Toevoegen",
+    "Cancel": "Annuleren",
+    "Field is required": "Veld vereist",
+    "Price": "Vaccinatie compenseren",
+    "Blood test price": "Bloedtestcompensatie",
+    "Amount": "Bedrag",
+    "Name": "Naam",
+    "Place": "Plaats",
+    "Date": "Datum",
+    "Alternative date": "Alternatieve datum",
+    "DUO id": "DUO id",
+    "Address": "Adres",
+    "Latitude": "Breedtegraad",
+    "Longitude": "Lengtegraad",
+    "Next": "Volgend",
+    "Back": "Terug",
+    "Create": "Maken",
+    "Country": "Land",
+    "State": "Staat",
+    "City": "Stad",
+    "ZIP code": "Postcode",
+    "Street address": "Adres",
+    "Street number": "Huisnummer",
+    "Healthcare provider number": "Nummer van de zorgverlener",
+    "Available": "Beschikbaar",
+    "out of": "van de",
+    "Choose vaccine": "Kies het vaccin partij",
+    "Password": "Wachtwoord",
+    "Healthcare provider manager number": "Vaccin dienst nummer",
+    "Healthcare provider managers": "Vaccin diensten",
+    "Healthcare provider manager": "Vaccin dienst",
+    "Ministry": "Ministerie",
+    "Step": "Stap",
+    "Reports": "Rapport",
+    "Count": "Gereserveerd",
+    "Minimum period from previous step": "Minimumperiode van de vorige fase",
+    "days": "dag",
+    "Reserved": "Gereserveerd",
+    "Total": "Totaal",
+    "MINISTRY":{
+      "VaccineListTitle":"Beheer vaccins partijen",
+      "Amount":"Gereserveerd",
+      "Vaccinations": "Vaccinatie pakketten"
+    },
+    "HCP_MANAGER":{
+      "VaccineListTitle":"Vaccins partijen",
+      "Amount":"Beschikbaar",
+      "Vaccinations": "Vaccination regelingen"
+    }
+  },
+  "Login": {
+    "Login": "Inloggen",
+    "Login as": "Aanmelden als",
+    "PasswordEmpty": "Voeg wachtwoord toe"
+  },
+  "Filter": {
+    "Filter": "Filter",
+    "Search": "Zoeken"
+  },
+  "Vaccine": {
+    "Vaccine type": "Type vaccin",
+    "Batch code": "Partij",
+    "New vaccine": "Nieuw vaccin partij"
+  },
+  "Event": {
+    "General information": "Algemeene gegevens",
+    "Location": "Locatie",
+    "Students": "Student",
+    "Healthcare providers": "Zorgverleners",
+    "BIGid in event": "Dit BIG id is al in het geval",
+    "Vaccine in event": "Dit Vaccine partij is al in het geval",
+    "Healthcare provider could not be found": "Zorgverlener kon niet gevonden worden",
+    "Vaccine could not be found": "Vaccin partij kon niet gevonden worden"
+  },
+  "Vaccination": {
+    "Batch code": "Partij",
+    "Date from": "Datum van",
+    "Date to": "Datum",
+    "Location": "Location",
+    "New vaccination": "Nieuw vaccinatie",
+    "Event": "Evenement",
+    "Number of injections": "Batch hoeveelheid",
+    "How much injection should be reserved?": "Hoeveel injectie moet worden gereserveerd?"
+  },
+  "Error": {
+    "Error": "Fout",
+    "Something went wrong. Please, try later": "Er ging iets mis. Alsjeblieft, probeer het later",
+    "Unauthorized, try again sign in": "Onbevoegd, probeer opnieuw in te loggen"
+  },
+  "HcpManager": {
+    "New healthcare provider manager": "Nieuw vaccin dienst"
+  }
+}
