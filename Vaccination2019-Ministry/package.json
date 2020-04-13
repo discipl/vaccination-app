@@ -28,7 +28,7 @@
     "@ngx-translate/http-loader": "latest",
     "chart.js": "^2.8.0",
     "core-js": "^2.5.4",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "moment": "^2.24.0",
     "ng2-charts": "^2.2.5",
     "ngx-google-places-autocomplete": "^2.0.4",
