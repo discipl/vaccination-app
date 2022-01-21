@@ -33,7 +33,7 @@
     "joi-objectid": "^2.0.0",
     "localize": "^0.4.7",
     "lodash": "latest",
-    "log4js": "^4.2.0",
+    "log4js": "^6.4.0",
     "log4js-extend": "^0.2.1",
     "mongodb": "latest",
     "mongoose": "^5.5.10",
